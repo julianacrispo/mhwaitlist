@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-helvetica-condensed: "HelveticaNeueCondensedBlack", system-ui, sans-serif;
+  }
+}
+
+.font-condensed {
+  font-family: var(--font-helvetica-condensed);
+}
+
