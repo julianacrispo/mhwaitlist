@@ -16,15 +16,14 @@ const mainTestimonials = [
     role: "Founder",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1683379965641-ItA9j0xZXOVaorO2L4Ujp91oSz3aAs.jpeg",
     quote:
-      "In 16 weeks I became my strongest and leanest version of myself in preparation for my first pregnancy. I have established habits and an understanding of my body that I can use for life.",
+      "In 16 weeks I became the strongest and leanest version of myself. I'm now pregnant and I have amazing habits and an understanding of my body that I can use for life.",
   },
   {
     name: "Samantha O.",
-    role: "Executive at Morgan Stanley",
+    role: "Executive Director",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1699468920068-iJhTVRpZPBNYJyjw6I6QyMuuZZRLBG.jpeg",
     quote:
-      "Prior to Metrics Health, I struggled to find balance - especially as a Mom of 3. In the past year I lost 20 lbs naturally and most importantly established habits my family and I will use for life. ",
-  },
+    "Prior to Metrics Health, I struggled to find balance. In the past year I lost 20 lbs naturally while juggling a career and 3 kids. What's been a game changer is creating habits my family and I can use for life.",  },
   {
     name: "Rebecca K.",
     role: "Founder & CEO",
@@ -33,16 +32,16 @@ const mainTestimonials = [
       "Metrics Health has helped me strike the balance I need to achieve health goals while pursuing my other ambitions. I initally started with the goal of fat loss but that has expanded to improving cardio health and cognitive function in a measurable way.",
   },
   {
-    name: "Bethany P",
-    role: "Serial Entrepreneur",
+    name: "Bethany P.",
+    role: "Founder",
     image:
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-02-21%20at%2010.35.29%E2%80%AFAM-liWI2wrbyUuH0ncZ8WXFbUeozYpgQ9.png",
     quote:
       "In the span of 5 weeks during my busiest work season I lost 3% bodyfat and gained 3 LBS of lean body mass. I have worked with many coaching services in the past but approaching habits this way was transformative for me.",
   },
   {
-    name: "Trina L",
-    role: "CMO of InnovateCorp",
+    name: "Trina L.",
+    role: "Director",
     image: "/placeholder.svg",
     quote:
       "Metrics Health has completely transformed the way I look at food, my body and the scale. As a result, I have made steady progress on goals and I am a much more balanced and healthy person.",
@@ -58,25 +57,25 @@ const mainTestimonials = [
 
 const finalRowTestimonials = [
   {
-    name: "Alyson",
-    role: "Tech Entrepreneur",
+    name: "Alyson C.",
+    role: "Non Profit Executive",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/alyson-aAsuqDQT6TVPAj2ZqDArSFU9yvQ6LD.jpeg",
     quote:
-      "Justin's approach to integrating health metrics with business performance has revolutionized how I run my company.",
+      "Prior to Metrics Health I had lost 12 lbs of muscle in a year on Dexascan. Clearly my efforts to lose fat weren't working. In the span of the first 6 weeks I added 3 lbs of muscle and lost 4 lbs of body fat. I am now armed with habits I can use for life.",
   },
   {
-    name: "Marina",
-    role: "Wellness Entrepreneur",
+    name: "Marina M.",
+    role: "Founder & Youtuber",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/marina-I2HgSWKgb1b6qfQjYOBfmhKkZqS7JN.jpeg",
     quote:
-      "Justin's approach to combining health metrics with business strategy has been transformative for my wellness practice.",
+      "Juliana is the person I ask when I want to understand habit psychology or the trends on the edge of health. With Metrics Health, she is bringing both together in a way that's truly unique and exciting.",
   },
   {
-    name: "Ivanna",
+    name: "Ivanna B.",
     role: "Wellness Tech Founder",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ivanna-x5NLBXihbcuSWyRq10Khb9QSBQPYWV.jpeg",
     quote:
-      "Justin's insights on combining health metrics with business growth have been game-changing for my wellness platform.",
+      "As a Triathlete, Founder and Mom, I was struggling to take my triathlon game to the next level. Juliana immediately pointed me in the right direction and I'll be doing my first Ironman at 39.",
   },
   {
     name: "Karla R.",
@@ -84,6 +83,69 @@ const finalRowTestimonials = [
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/karla-Z4HOnKhl0PYTRNLZ4JxCdiD9Y0TMY3.jpeg",
     quote:
       "The data-driven approach combined with holistic health insights has been revolutionary for our organization's growth and team wellbeing.",
+  },
+  {
+    name: "Sarah M.",
+    role: "Tech Executive",
+    image: "/placeholder.svg",
+    quote:
+      "The combination of data-driven insights and personalized coaching has helped me achieve results I never thought possible. In just 12 weeks, I've seen dramatic improvements in both my physical and mental performance.",
+  },
+  {
+    name: "Rachel P.",
+    role: "Startup Founder",
+    image: "/placeholder.svg",
+    quote:
+      "As a busy founder, I needed a program that could adapt to my unpredictable schedule. Metrics Health provided exactly that, plus the accountability and structure I needed to stay consistent.",
+  },
+  {
+    name: "Jennifer K.",
+    role: "Investment Banker",
+    image: "/placeholder.svg",
+    quote:
+      "The program's focus on measurable results and sustainable habits has been transformative. I've lost 15 lbs while maintaining my energy levels through long work days.",
+  },
+  {
+    name: "Michelle D.",
+    role: "Product Leader",
+    image: "/placeholder.svg",
+    quote:
+      "What sets Metrics Health apart is their scientific approach to wellness. Every recommendation is backed by data, and the results speak for themselves.",
+  },
+  {
+    name: "Catherine L.",
+    role: "VC Partner",
+    image: "/placeholder.svg",
+    quote:
+      "I've tried many health programs, but none have been as effective or sustainable as this one. The personalized approach and focus on habits has made all the difference.",
+  },
+  {
+    name: "Alexandra W.",
+    role: "Medical Director",
+    image: "/placeholder.svg",
+    quote:
+      "As a physician, I appreciate the evidence-based approach. The program's integration of health metrics with lifestyle changes is truly innovative and effective.",
+  },
+  {
+    name: "Emily R.",
+    role: "Finance Director",
+    image: "/placeholder.svg",
+    quote:
+      "The program's data-driven approach helped me optimize my workouts and nutrition while managing a demanding career. I've achieved better results in 3 months than I did in years of traditional programs.",
+  },
+  {
+    name: "Victoria H.",
+    role: "Tech Entrepreneur",
+    image: "/placeholder.svg",
+    quote:
+      "As someone who loves data and measurable outcomes, Metrics Health's approach resonated with me immediately. The personalized insights and actionable strategies have transformed my health journey.",
+  },
+  {
+    name: "Diana M.",
+    role: "Corporate Attorney",
+    image: "/placeholder.svg",
+    quote:
+      "Despite my packed schedule, the program's flexibility and evidence-based methods helped me achieve my health goals. The focus on sustainable habits has been key to maintaining my results.",
   }
 ]
 
@@ -217,7 +279,7 @@ export default function Home() {
                 <span className="text-sm text-gray-500">Notice the difference in 7 days or you don't pay</span>
               </div>
               <h1 className="font-bold text-[2.75rem] uppercase leading-[0.85] tracking-[-0.03em] lg:text-[3.5rem]">
-                HOW BUSY WOMEN REACH HEALTH GOALS ON AUTOPILOT
+                HOW HIGH-ACHIEVINGWOMEN REACH HEALTH GOALS ON AUTOPILOT
               </h1>
             </div>
 
@@ -267,7 +329,7 @@ export default function Home() {
         </div>
 
         {/* Testimonials Section */}
-        <section className="mt-32 px-4 md:px-6 lg:px-8">
+        <section className="mt-24 px-4 md:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {testimonialsFiltered.map((testimonial, index) => (
