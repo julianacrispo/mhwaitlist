@@ -42,16 +42,16 @@ const mainTestimonials = [
   {
     name: "Trina L.",
     role: "Director",
-    image: "/placeholder.svg",
+    image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/trinaJPEG-wmHQeid6YFsCADKCaDhVWtOLTYQRMb.JPEG",
     quote:
-      "Metrics Health has completely transformed the way I look at food, my body and the scale. As a result, I have made steady progress on goals and I am a much more balanced and healthy person.",
+      "Juliana has completely transformed the way I look at food and weight loss for the better. What worked in my 20s no longer works in my 40s and I've been able to achieve my goals despite some of life's craziest seasons."
   },
   {
     name: "Lisa D",
     role: "Family Medical Doctor",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/lisa-CNtVLXZaYK8bF5YXJNOYjjTVdgTT5y.jpeg",
     quote:
-      "Juliana is taking her insights from years as a busy executive, Mom and pro physique athlete and pairing that with the latest research to help ambitius people measure what truly matters. I am excited to see how many people Metrics Health can help.",
+      "Juliana is taking her insights from years as a busy executive, Mom and pro physique athlete and pairing that with the latest research to help ambitius people measure what truly matters. I am excited to see how many people Metrics Health can help."
   }
 ]
 
@@ -61,91 +61,91 @@ const finalRowTestimonials = [
     role: "Non Profit Executive",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/alyson-aAsuqDQT6TVPAj2ZqDArSFU9yvQ6LD.jpeg",
     quote:
-      "Prior to Metrics Health I had lost 12 lbs of muscle in a year on Dexascan. Clearly my efforts to lose fat weren't working. In the span of the first 6 weeks I added 3 lbs of muscle and lost 4 lbs of body fat. I am now armed with habits I can use for life.",
+      "Prior to Metrics Health I had lost 12 lbs of muscle in a year on Dexascan. Clearly my efforts to lose fat weren't working. In the span of the first 6 weeks I added 3 lbs of muscle and lost 4 lbs of body fat. I am now hooked on the process and armed with habits I can use for life."
   },
   {
     name: "Marina M.",
     role: "Founder & Youtuber",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/marina-I2HgSWKgb1b6qfQjYOBfmhKkZqS7JN.jpeg",
     quote:
-      "Juliana is the person I ask when I want to understand habit psychology or the trends on the edge of health. With Metrics Health, she is bringing both together in a way that's truly unique and exciting.",
+      "Juliana has been a go-to resource for ambitious women to find balance with their health goals on Youtube for a while now. With Metrics Health, she is bringing both together all this knowledge in a way that's truly unique, actionable, and exciting."
   },
   {
     name: "Ivanna B.",
     role: "Wellness Tech Founder",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ivanna-x5NLBXihbcuSWyRq10Khb9QSBQPYWV.jpeg",
     quote:
-      "As a Triathlete, Founder and Mom, I was struggling to take my triathlon game to the next level. Juliana immediately pointed me in the right direction and I'll be doing my first Ironman at 39.",
+      "As a Mom, Founder and new Triathlete, I wanted to take my triathlon game to the next level. Juliana immediately pointed me in the right direction and I'll be doing my first Ironman at 39."
   },
   {
     name: "Karla R.",
-    role: "Healthcare Strategist",
+    role: "Founder",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/karla-Z4HOnKhl0PYTRNLZ4JxCdiD9Y0TMY3.jpeg",
     quote:
-      "The data-driven approach combined with holistic health insights has been revolutionary for our organization's growth and team wellbeing.",
+      "Juliana has managed to take a decades worth of successful experiments on her own health and replicate the process to dozens of other high-achieving women. The results are exciting and transformative. There has never been a better time to join Metrics Health."
   },
   {
-    name: "Sarah M.",
-    role: "Tech Executive",
-    image: "/placeholder.svg",
+    name: "Suzy R.",
+    role: "Business Owner",
+    image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/suzy-CwwpTzOsOzDCWi4gVeGg0CxYW0RfC5.jpeg",
     quote:
-      "The combination of data-driven insights and personalized coaching has helped me achieve results I never thought possible. In just 12 weeks, I've seen dramatic improvements in both my physical and mental performance.",
+      "I've had many successful attempts at fat loss but no successful attempts at managing to keep it off. After speaking with Juliana it became clear that her approach was different. I was initially skeptical but after months of progress and results I can confidently say that this approach is different and I don't see the weight ever coming back on."
   },
   {
-    name: "Rachel P.",
-    role: "Startup Founder",
-    image: "/placeholder.svg",
+    name: "Kara F.",
+    role: "Managing Director",
+    image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/kara-dAd14NxoHHhOrgdq7hmcUXHjaDiDUj.jpg",
     quote:
-      "As a busy founder, I needed a program that could adapt to my unpredictable schedule. Metrics Health provided exactly that, plus the accountability and structure I needed to stay consistent.",
+      "I had looked at multiple coaching programs prior to joining Metrics Health and now almost a year in I can honestly say I'm so glad I joined this one. I've lost the post partum weight, gained strength and done so all while growing my business and being the Mom I want to be. Juliana truly gets the needs of ambitious women like no other."
   },
   {
-    name: "Jennifer K.",
-    role: "Investment Banker",
-    image: "/placeholder.svg",
+    name: "Krissy H.",
+    role: "Founder",
+    image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/krissy-xCchKKc04UxGJzWgUI0B4rvhTDvAYY.jpeg",
     quote:
-      "The program's focus on measurable results and sustainable habits has been transformative. I've lost 15 lbs while maintaining my energy levels through long work days.",
+      "During the span of 6 months I grew my new business from 0 to multiple 7 figures. Juliana helped me navigate an extremely busy time in my life so that I didn't go backwards. I've been able to put in place systems to help me stay healthy despite the chaos of early stage growth."
   },
   {
-    name: "Michelle D.",
-    role: "Product Leader",
-    image: "/placeholder.svg",
+    name: "Denise D.",
+    role: "Founder",
+    image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/denise-6hB1cidNBnzuehJe33p5axpK5GcN2b.jpeg",
     quote:
-      "What sets Metrics Health apart is their scientific approach to wellness. Every recommendation is backed by data, and the results speak for themselves.",
+      "My body wasn't working as well as it had prior to having my daughter and I wanted to feel and look like myself again. Juliana helped me troubleshoot some of the issues I was facing and put in place the nutrition to feel like myself again. I am gearing up for my second pregnancy and am so glad I have Metrics Health in my corner through the process."
   },
   {
-    name: "Catherine L.",
-    role: "VC Partner",
-    image: "/placeholder.svg",
+    name: "Victoria N.",
+    role: "Healthcare Executive",
+    image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/victoria-TnWGftYbanqrcBIA1O7cn0VT69bnqa.jpeg",
     quote:
-      "I've tried many health programs, but none have been as effective or sustainable as this one. The personalized approach and focus on habits has made all the difference.",
+      "As an executive in one of the top healthcare companies in the world, my health was a dumpster fire due to the lifestyle. I needed accountability, metrics and goals to get back on track. Now at 50 I can honestly say I feel better than my 30s. I also don't look like I'm 50 which is a big plus."
   },
   {
-    name: "Alexandra W.",
-    role: "Medical Director",
-    image: "/placeholder.svg",
+    name: "Ida R.",
+    role: "Technology Director",
+    image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/ida-i2anCD6wa8yGjedQa5Mdc9tpR2ABgY.png",
     quote:
-      "As a physician, I appreciate the evidence-based approach. The program's integration of health metrics with lifestyle changes is truly innovative and effective.",
+      "I spent years spinning my wheels trying to do what I thought was best for my body and not getting the results I wanted. Within weeks I got better results than the years I spent trying on my own. If you want to look better than you ever had before in your 40's + then Metrics Health is the way to go"
   },
   {
-    name: "Emily R.",
-    role: "Finance Director",
-    image: "/placeholder.svg",
+    name: "Stacey M.",
+    role: "Founder",
+    image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/stacey-kyoUdQtmtklxatn1NSdu3PTVcQxkye.jpeg",
     quote:
-      "The program's data-driven approach helped me optimize my workouts and nutrition while managing a demanding career. I've achieved better results in 3 months than I did in years of traditional programs.",
+      "This is the best program I have used in terms of results for time spent. Juliana has cracked the code for high-achieving women. I am actually motivated to do the things I know are good for my health which has been a game changer for me."
   },
   {
-    name: "Victoria H.",
-    role: "Tech Entrepreneur",
-    image: "/placeholder.svg",
+    name: "Kasey L.",
+    role: "Founder",
+    image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/kasey-cnxhy0ROafEoHS2ztrDI4qo4Bvqggy.jpeg",
     quote:
-      "As someone who loves data and measurable outcomes, Metrics Health's approach resonated with me immediately. The personalized insights and actionable strategies have transformed my health journey.",
+      "Juliana is taking a decade of experiments and insights and distilling them into protocols that will move the needle most for the individual. Her approach is realistic and maintainable. As a Mom of soon-to-be 2 kiddos, I'm glad to have Juliana and Metrics Health in my corner."
   },
   {
-    name: "Diana M.",
-    role: "Corporate Attorney",
-    image: "/placeholder.svg",
+    name: "Katerina L.",
+    role: "Founder & CEO",
+    image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/katerina-DpTKAqBo2DExcfrocZ6HKHsUjXpVFM.jpeg",
     quote:
-      "Despite my packed schedule, the program's flexibility and evidence-based methods helped me achieve my health goals. The focus on sustainable habits has been key to maintaining my results.",
+      "My company focuses on preventing burnout in employees using Neuroscience so I was excited to see Juliana had developed an approach using what we know about health. What Juliana knows is that the issue isn't know what to do, it's knowing how to make it a habit and that's where Metrics Health shines."
   }
 ]
 
@@ -279,7 +279,7 @@ export default function Home() {
                 <span className="text-sm text-gray-500">Notice the difference in 7 days or you don't pay</span>
               </div>
               <h1 className="font-bold text-[2.75rem] uppercase leading-[0.85] tracking-[-0.03em] lg:text-[3.5rem]">
-                HOW HIGH-ACHIEVINGWOMEN REACH HEALTH GOALS ON AUTOPILOT
+                HOW HIGH-ACHIEVING WOMEN REACH HEALTH GOALS ON AUTOPILOT
               </h1>
             </div>
 
@@ -313,6 +313,7 @@ export default function Home() {
                         width={32}
                         height={32}
                         className="rounded-full border-2 border-white object-cover"
+                        unoptimized={true}
                       />
                     ))}
                   </div>
@@ -340,7 +341,9 @@ export default function Home() {
                       alt={testimonial.name}
                       width={60}
                       height={60}
-                      className="rounded-full object-cover mr-4 flex-shrink-0"
+                      className="rounded-full object-cover mr-4 flex-shrink-0 w-[60px] h-[60px]"
+                      style={{ aspectRatio: "1/1" }}
+                      unoptimized={true}
                     />
                     <div>
                       <div className="flex mb-1">
@@ -377,7 +380,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="mt-16 py-6 text-center text-sm text-gray-500">
-        Metrics Health International Copyright 2025
+        Metrics Health International Copyright 2024
       </footer>
 
       <WaitlistModal
