@@ -9,6 +9,7 @@ import { useState } from "react"
 import { toast } from "react-hot-toast"
 import { WaitlistModal } from "@/components/WaitlistModal"
 import { Toaster } from "react-hot-toast"
+import { AnimatedText } from "@/components/AnimatedText"
 
 const mainTestimonials = [
   {
@@ -16,7 +17,7 @@ const mainTestimonials = [
     role: "Founder",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1683379965641-ItA9j0xZXOVaorO2L4Ujp91oSz3aAs.jpeg",
     quote:
-      "In 16 weeks I became the strongest and leanest version of myself. I'm now pregnant and I have amazing habits and an understanding of my body that I can use for life.",
+      "For years I was dieting and never making any progress. In 16 weeks, I became the strongest and leanest verion of myself just in time for my first pregnancy. I finally understand my body and built foundational sustainable habits I can use for life.",
   },
   {
     name: "Samantha O.",
@@ -44,14 +45,14 @@ const mainTestimonials = [
     role: "Director",
     image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/trinaJPEG-wmHQeid6YFsCADKCaDhVWtOLTYQRMb.JPEG",
     quote:
-      "Juliana has completely transformed the way I look at food and weight loss for the better. What worked in my 20s no longer works in my 40s and I've been able to achieve my goals despite some of life's craziest seasons."
+      "Metrics Health has completely transformed the way I look at health for the better. What worked in my 20s no longer works in my 40s and I've been able to achieve my goals despite some of life's craziest seasons."
   },
   {
-    name: "Lisa D",
+    name: "Lisa D.",
     role: "Family Medical Doctor",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/lisa-CNtVLXZaYK8bF5YXJNOYjjTVdgTT5y.jpeg",
     quote:
-      "Juliana is taking her insights from years as a busy executive, Mom and pro physique athlete and pairing that with the latest research to help ambitius people measure what truly matters. I am excited to see how many people Metrics Health can help."
+      "Juliana is taking her insights from years as a busy executive, Mom and pro physique athlete and pairing that with the latest research to help ambitious people measure what truly matters. I recommend Metrics Health to my busy, working mom patients."
   }
 ]
 
@@ -68,49 +69,49 @@ const finalRowTestimonials = [
     role: "Founder & Youtuber",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/marina-I2HgSWKgb1b6qfQjYOBfmhKkZqS7JN.jpeg",
     quote:
-      "Juliana has been a go-to resource for ambitious women to find balance with their health goals on Youtube for a while now. With Metrics Health, she is bringing both together all this knowledge in a way that's truly unique, actionable, and exciting."
+      "Juliana has been a go-to resource for ambitious women to find balance with their health goals on Youtube for a while now. With Metrics Health, she is bringing it all together in a way that's truly unique, actionable, and exciting for the modern woman."
   },
   {
     name: "Ivanna B.",
-    role: "Wellness Tech Founder",
+    role: "Founder",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ivanna-x5NLBXihbcuSWyRq10Khb9QSBQPYWV.jpeg",
     quote:
-      "As a Mom, Founder and new Triathlete, I wanted to take my triathlon game to the next level. Juliana immediately pointed me in the right direction and I'll be doing my first Ironman at 39."
+      "As a Mom, Founder and new Triathlete, I wanted to take my triathlon game to the next level. Metrics Health got me going in the right direction and I'll be doing my first Ironman at 39. My times, performance and recovery has never been better."
   },
   {
     name: "Karla R.",
     role: "Founder",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/karla-Z4HOnKhl0PYTRNLZ4JxCdiD9Y0TMY3.jpeg",
     quote:
-      "Juliana has managed to take a decades worth of successful experiments on her own health and replicate the process to dozens of other high-achieving women. The results are exciting and transformative. There has never been a better time to join Metrics Health."
+      "The results are exciting and transformative not only for individual women but for women's health. There has never been a better time to join Metrics Health."
   },
   {
     name: "Suzy R.",
     role: "Business Owner",
     image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/suzy-CwwpTzOsOzDCWi4gVeGg0CxYW0RfC5.jpeg",
     quote:
-      "I've had many successful attempts at fat loss but no successful attempts at managing to keep it off. After speaking with Juliana it became clear that her approach was different. I was initially skeptical but after months of progress and results I can confidently say that this approach is different and I don't see the weight ever coming back on."
+      "I've had many successful attempts at fat loss but no successful attempts at managing to keep it off. After speaking with Metrics Health it became clear that her approach was different. I was initially skeptical but after months of progress and results I can confidently say that this approach is different and I don't see the weight ever coming back on."
   },
   {
     name: "Kara F.",
     role: "Managing Director",
     image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/kara-dAd14NxoHHhOrgdq7hmcUXHjaDiDUj.jpg",
     quote:
-      "I had looked at multiple coaching programs prior to joining Metrics Health and now almost a year in I can honestly say I'm so glad I joined this one. I've lost the post partum weight, gained strength and done so all while growing my business and being the Mom I want to be. Juliana truly gets the needs of ambitious women like no other."
+      "I had shopped multiple executive health coaching programs prior to joining Metrics Health and a year in I can honestly say I'm so glad I joined this one. I've lost the post partum weight, gained strength, become my most vibrand and healthiest self and done so all while growing my business and being the Mom I want to be. Metrics truly gets the needs of ambitious women like no other."
   },
   {
     name: "Krissy H.",
     role: "Founder",
     image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/krissy-xCchKKc04UxGJzWgUI0B4rvhTDvAYY.jpeg",
     quote:
-      "During the span of 6 months I grew my new business from 0 to multiple 7 figures. Juliana helped me navigate an extremely busy time in my life so that I didn't go backwards. I've been able to put in place systems to help me stay healthy despite the chaos of early stage growth."
+      "During the span of 6 months I grew my new business from 0 to multiple 7 figures. Metrics Health helped me navigate an extremely busy time in my life so that I didn't go backwards. I've been able to put in place systems to help me stay healthy despite the chaos of early stage growth."
   },
   {
     name: "Denise D.",
     role: "Founder",
     image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/denise-6hB1cidNBnzuehJe33p5axpK5GcN2b.jpeg",
     quote:
-      "My body wasn't working as well as it had prior to having my daughter and I wanted to feel and look like myself again. Juliana helped me troubleshoot some of the issues I was facing and put in place the nutrition to feel like myself again. I am gearing up for my second pregnancy and am so glad I have Metrics Health in my corner through the process."
+      "My body wasn't working as well as it had prior to having my daughter and I wanted to feel and look like myself again. Metrics Health helped me troubleshoot the issues I was facing and put in place the nutrition to feel like myself again. I am gearing up for my second pregnancy and am so glad I have Metrics Health in my corner through the process."
   },
   {
     name: "Victoria N.",
@@ -124,64 +125,58 @@ const finalRowTestimonials = [
     role: "Technology Director",
     image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/ida-i2anCD6wa8yGjedQa5Mdc9tpR2ABgY.png",
     quote:
-      "I spent years spinning my wheels trying to do what I thought was best for my body and not getting the results I wanted. Within weeks I got better results than the years I spent trying on my own. If you want to look better than you ever had before in your 40's + then Metrics Health is the way to go"
+      "I spent years spinning my wheels trying to do what I thought was best for my body and not getting the results I wanted. Within weeks I got better results than the years I spent trying on my own. If you want to look better than you ever had before in your 40's + then Metrics Health is the way to go."
   },
   {
     name: "Stacey M.",
     role: "Founder",
     image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/stacey-kyoUdQtmtklxatn1NSdu3PTVcQxkye.jpeg",
     quote:
-      "This is the best program I have used in terms of results for time spent. Juliana has cracked the code for high-achieving women. I am actually motivated to do the things I know are good for my health which has been a game changer for me."
+      "This is the best program I have used in terms of results for time spent. Metrics Health has cracked the code for high-achieving women. I am actually motivated to do the things I know are good for my health which has been a game changer for me."
   },
   {
     name: "Kasey L.",
     role: "Founder",
     image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/kasey-cnxhy0ROafEoHS2ztrDI4qo4Bvqggy.jpeg",
     quote:
-      "Juliana is taking a decade of experiments and insights and distilling them into protocols that will move the needle most for the individual. Her approach is realistic and maintainable. As a Mom of soon-to-be 2 kiddos, I'm glad to have Juliana and Metrics Health in my corner."
+      "Metrics Health is taking a decade of experiments and insights and distilling them into protocols that will move the needle most for the individual. The approach is realistic and maintainable. As a Mom of soon-to-be 2 kiddos, I'm glad to have Metrics Health in my corner."
   },
   {
     name: "Katerina L.",
     role: "Founder & CEO",
     image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/katerina-DpTKAqBo2DExcfrocZ6HKHsUjXpVFM.jpeg",
     quote:
-      "My company focuses on preventing burnout in employees using Neuroscience so I was excited to see Juliana had developed an approach using what we know about health. What Juliana knows is that the issue isn't know what to do, it's knowing how to make it a habit and that's where Metrics Health shines."
+      "My company focuses on preventing burnout in employees using Neuroscience so I was excited to see Metrics Health had developed an approach using what we know about health. What Juliana knows is that the issue isn't know what to do, it's knowing how to make it a habit and that's where Metrics Health shines."
   }
 ]
 
 const allTestimonials = [...mainTestimonials, ...finalRowTestimonials]
-const testimonialsFiltered = allTestimonials.filter((t) => !["Suzy", "Kara B."].includes(t.name))
+const testimonialsFiltered = allTestimonials.filter((t) => !["Suzy"].includes(t.name))
 
 const faqItems = [
   {
     question: "How is Metrics Health different from other programs?",
-    answer:
-      "Metrics Health is specifically designed for busy, high-achieving women, focusing on sustainable habits and data-driven results. Our program adapts to your lifestyle, ensuring you can reach your health goals without disrupting your busy schedule.",
+    answer: "Metrics Health is specifically designed for busy, high-achieving women, focusing on sustainable habits and data-driven results. After the diagnostic progress, our program adapts to your lifestyle, ensuring you can reach your health goals without disrupting your busy schedule.",
   },
   {
     question: "How much time do I need to commit to the program?",
-    answer:
-      "Our program is flexible and can be tailored to your schedule. Most participants find that dedicating a minimum of 10 minutes a day is sufficient to see results. Best results are achieved when combined with dedicated custom exercise sessions totaling 90 minutes spread throughout the week",
+    answer: "The initial diagnostic process is a time commitment of about 3 total hours which can be spread over the course of 1 month. After the diagnostic process, our program is flexible and can be tailored to your schedule. Most participants find that dedicating a minimum of 10 minutes a day is sufficient to see results. Best results are achieved when combined with dedicated custom exercise sessions totaling 90 minutes spread throughout the week",
   },
   {
     question: "How much does it cost?",
-    answer:
-      "Investment in the program starts in the high 4 figures. This is explained by the diagnostic testing and high level of service and customization provided to get clients life changing results",
+    answer: "Investment in the program starts in the high 4 figures. 98% of members report Metrics Health being the best investment they have ever made in themselves and end up renewing for an annual term. If you think of your body like your 'forever home' it makes sense to invest in making sure this home is the healthy, happy and strong using the latest science and best support possible.",
   },
   {
     question: "What kind of results can I expect?",
-    answer:
-      "While results vary, many of our clients report noticeable improvements in energy levels in the first 3 days. In 21 days they see decreases in bodyfat and close fitting loser. By 4 weeks, they notice a more toned looking physique. Clients also report improvements in metabolism, fertility, mood, immunne function, and lower stress levels.",
+    answer: "Clients report noticeable improvements in energy levels in the first 3 days. In 21 days they see decreases in bodyfat, a more toned appearance, less bloating and more energy. Long term they report noticable improvements in metabolism, fertility, mood, immunne function, and lower stress levels.",
   },
   {
     question: "Is this program suitable for beginners?",
-    answer:
-      "Yes. Metrics Health is designed to accommodate all fitness levels, from beginners to advanced and even PRO level athletes. Our personalized data-driven approach ensures that you're working at a level that's challenging yet achievable for you.",
+    answer: "Yes. Metrics Health is designed to accommodate all fitness levels, from beginners to advanced and even PRO level athletes. Our personalized data-driven approach ensures that you're working at a level that's challenging yet achievable for you.",
   },
   {
-    question: "How does the 7-day guarantee work?",
-    answer:
-      "We're confident in our program's effectiveness. If you don't notice a difference in your energy levels, sleep quality, or overall well-being within the first 7 days, we'll refund your investment in full.",
+    question: "How does the guarantee work?",
+    answer: "We're confident in our program's effectiveness. If you go through the diagnostic process, execute the simple daily habits and don't get the promised results, we'll refund your investment in full.",
   }
 ]
 
@@ -245,15 +240,10 @@ export default function Home() {
         {/* Logo */}
         <div className="mb-20 flex justify-center">
           <div className="flex items-center gap-2">
-            <div className="rounded-lg bg-blue-100 p-2">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-6 w-6">
-                <circle cx="12" cy="12" r="10" />
-                <circle cx="12" cy="12" r="6" />
-                <circle cx="12" cy="12" r="2" />
-                <path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
-              </svg>
-            </div>
-            <span className="text-2xl font-bold">METRICS HEALTH</span>
+            <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 12h4l2-6 4 12 2-9 2 3h4" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span className="text-2xl font-bold tracking-tight">METRICS HEALTH</span>
           </div>
         </div>
 
@@ -276,7 +266,7 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-                <span className="text-sm text-gray-500">Notice the difference in 7 days or you don't pay</span>
+                <span className="text-sm text-gray-500">Transform in 30 days or you don't pay</span>
               </div>
               <h1 className="font-bold text-[2.75rem] uppercase leading-[0.85] tracking-[-0.03em] lg:text-[3.5rem]">
                 HOW HIGH-ACHIEVING WOMEN REACH HEALTH GOALS ON AUTOPILOT
