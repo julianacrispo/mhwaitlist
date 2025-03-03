@@ -44,8 +44,7 @@ const mainTestimonials = [
     name: "Trina L.",
     role: "Director",
     image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/trinaJPEG-wmHQeid6YFsCADKCaDhVWtOLTYQRMb.JPEG",
-    quote:
-      "Metrics Health has completely transformed the way I look at health for the better. What worked in my 20s no longer works in my 40s and I've been able to achieve my goals despite some of life's craziest seasons."
+    quote: "Metrics Health has completely transformed the way I look at health for the better. What worked in my 20s no longer works in my 40s and I've been able to achieve my goals despite some of life's craziest seasons."
   },
   {
     name: "Lisa D.",
@@ -97,7 +96,7 @@ const finalRowTestimonials = [
     role: "Managing Director",
     image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/kara-dAd14NxoHHhOrgdq7hmcUXHjaDiDUj.jpg",
     quote:
-      "I had shopped multiple executive health coaching programs prior to joining Metrics Health and a year in I can honestly say I'm so glad I joined this one. I've lost the post partum weight, gained strength, become my most vibrand and healthiest self and done so all while growing my business and being the Mom I want to be. Metrics truly gets the needs of ambitious women like no other."
+      "I had shopped multiple executive health coaching programs prior to joining Metrics Health and a year in I can honestly say I'm so glad I joined this one. I've lost the post partum weight, gained strength, become my most vibrant and healthiest self and done so all while growing my business and being the Mom I want to be. Metrics truly gets the needs of ambitious women like no other."
   },
   {
     name: "Krissy H.",
@@ -206,7 +205,7 @@ export default function Home() {
   const handleSubmit = async (formData: WaitlistFormData) => {
     setIsSubmitting(true)
     try {
-      console.log('Submitting form data:', formData)
+      console.log('Starting form submission with data:', formData)
       
       const response = await fetch('/api/waitlist', {
         method: 'POST',
@@ -216,7 +215,9 @@ export default function Home() {
         body: JSON.stringify(formData),
       })
 
+      console.log('Response status:', response.status)
       const data = await response.json()
+      console.log('Response data:', data)
       
       if (!response.ok) {
         throw new Error(data.error || 'Failed to join waitlist')
