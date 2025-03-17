@@ -7,7 +7,7 @@ import Image from "next/image"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { useState } from "react"
 import { toast } from "react-hot-toast"
-import { WaitlistModal } from "@/components/WaitlistModal"
+import { WaitlistModal } from "@/components/WaitlistModal.jsx"
 import { Toaster } from "react-hot-toast"
 import { AnimatedText } from "@/components/AnimatedText"
 

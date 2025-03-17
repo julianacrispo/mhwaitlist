@@ -12,12 +12,24 @@
   ],
   "redirects": [
     {
-      "source": "http://metricshealth.com/:path*",
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "metricshealth.com"
+        }
+      ],
       "destination": "https://metricshealth.com/:path*",
       "permanent": true
     },
     {
-      "source": "http://www.metricshealth.com/:path*",
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.metricshealth.com"
+        }
+      ],
       "destination": "https://metricshealth.com/:path*",
       "permanent": true
     }
