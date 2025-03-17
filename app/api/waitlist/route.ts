@@ -11,6 +11,41 @@ console.log('Resend API Key Status:', {
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Phone number validation patterns
+const phonePatterns: Record<string, { pattern: string, minLength: number, maxLength: number }> = {
+  "+1": {
+    pattern: "^[2-9]\\d{2}[2-9]\\d{2}\\d{4}$", // US/Canada: 10 digits, no leading 1
+    minLength: 10,
+    maxLength: 10
+  },
+  "+44": {
+    pattern: "^7\\d{9}$", // UK: 10 digits starting with 7
+    minLength: 10,
+    maxLength: 10
+  },
+  // Default pattern for other countries
+  "default": {
+    pattern: "^\\d{6,15}$", // 6-15 digits
+    minLength: 6,
+    maxLength: 15
+  }
+};
+
+// Validate phone number based on country code
+function validatePhoneNumber(phoneNumber: string, countryCode: string): boolean {
+  // Get the pattern for the country code or use default
+  const patternInfo = phonePatterns[countryCode] || phonePatterns.default;
+  
+  // Check length
+  if (phoneNumber.length < patternInfo.minLength || phoneNumber.length > patternInfo.maxLength) {
+    return false;
+  }
+  
+  // Check pattern
+  const pattern = new RegExp(patternInfo.pattern);
+  return pattern.test(phoneNumber);
+}
+
 export async function POST(request: Request) {
   try {
     // Log the start of request processing
@@ -21,13 +56,22 @@ export async function POST(request: Request) {
     const body = await request.json();
     console.log('Received data:', body);
     
-    const { email, name, company, goals, challenges } = body;
+    const { email, name, company, countryCode, phoneNumber, goals, challenges } = body;
 
     // Validate required fields
-    if (!email || !name || !goals || !challenges) {
-      console.error('Missing required fields:', { email, name, goals, challenges });
+    if (!email || !name || !phoneNumber || !goals || !challenges) {
+      console.error('Missing required fields:', { email, name, phoneNumber, goals, challenges });
       return NextResponse.json(
         { message: 'Missing required fields', success: false },
+        { status: 400 }
+      );
+    }
+
+    // Validate phone number format
+    if (!validatePhoneNumber(phoneNumber, countryCode || "+1")) {
+      console.error('Invalid phone number format:', { phoneNumber, countryCode });
+      return NextResponse.json(
+        { message: 'Invalid phone number format', success: false },
         { status: 400 }
       );
     }
@@ -50,12 +94,17 @@ export async function POST(request: Request) {
       );
     }
 
+    // Format phone number for storage (ensure it's just digits)
+    const formattedPhoneNumber = phoneNumber.replace(/\D/g, '');
+
     // Create new waitlist entry
     console.log('Creating waitlist entry...');
     const waitlistEntry = await Waitlist.create({
       email,
       name,
       company,
+      countryCode: countryCode || "+1",
+      phoneNumber: formattedPhoneNumber,
       goals,
       challenges,
     });
@@ -78,6 +127,8 @@ export async function POST(request: Request) {
               <ul>
                 <li><strong>Your Goals:</strong> ${goals}</li>
                 <li><strong>Current Challenges:</strong> ${challenges}</li>
+                <li><strong>Phone Number:</strong> ${countryCode} ${formattedPhoneNumber}</li>
+                ${company ? `<li><strong>LinkedIn:</strong> <a href="${company}" target="_blank">${company}</a></li>` : ''}
               </ul>
               <p>We'll be in touch soon with more information about our program and how we can help you reach your goals.</p>
               <p>Best regards,<br>The Metrics Health Team</p>

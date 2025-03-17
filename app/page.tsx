@@ -89,7 +89,7 @@ const finalRowTestimonials = [
     role: "Business Owner",
     image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/suzy-CwwpTzOsOzDCWi4gVeGg0CxYW0RfC5.jpeg",
     quote:
-      "I've had many successful attempts at fat loss but no successful attempts at managing to keep it off. After speaking with Metrics Health it became clear that her approach was different. I was initially skeptical but after months of progress and results I can confidently say that this approach is different and I don't see the weight ever coming back on."
+      "I've had many successful attempts at fat loss but no successful attempts at managing to keep it off. After speaking with Metrics Health it became clear that this approach was different. I was initially skeptical but after months of progress and results I can confidently say that this approach is different and I don't see the weight ever coming back on."
   },
   {
     name: "Kara F.",
@@ -182,7 +182,9 @@ const faqItems = [
 interface WaitlistFormData {
   email: string
   name: string
-  company?: string
+  company?: string // LinkedIn Profile URL
+  countryCode: string
+  phoneNumber: string
   goals: string
   challenges: string
 }
@@ -371,7 +373,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="mt-16 py-6 text-center text-sm text-gray-500">
-        Metrics Health International Copyright 2024
+        Metrics Health International Copyright 2025
       </footer>
 
       <WaitlistModal
