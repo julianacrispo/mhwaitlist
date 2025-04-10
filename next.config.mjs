@@ -24,6 +24,18 @@ const nextConfig = {
         protocol: "https",
         hostname: "c67qkd4jojiixsgq.public.blob.vercel-storage.com",
       },
+      {
+        protocol: "https",
+        hostname: "i.imgur.com",
+      },
+      {
+        protocol: "https",
+        hostname: "i.ibb.co",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
     ],
   },
   experimental: {

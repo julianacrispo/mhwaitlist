@@ -155,9 +155,9 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit }) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Join Our Waitlist</DialogTitle>
+          <DialogTitle>Apply for Coaching</DialogTitle>
           <DialogDescription>
-            Tell us a bit more about yourself to help us personalize your experience.
+            We only accept clients we can truly transform. Please take a minute to tell us about yourself and your goals below. 
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -217,7 +217,7 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit }) {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="company">LinkedIn Profile URL (Optional)</Label>
+            <Label htmlFor="company">LinkedIn Profile URL or Occupation (We're a community of high-achievers so we want to know what you do)</Label>
             <Input
               id="company"
               type="url"

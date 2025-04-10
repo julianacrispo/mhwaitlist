@@ -10,6 +10,7 @@ import { toast } from "react-hot-toast"
 import { WaitlistModal } from "@/components/WaitlistModal.jsx"
 import { Toaster } from "react-hot-toast"
 import { AnimatedText } from "@/components/AnimatedText"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 const mainTestimonials = [
   {
@@ -96,7 +97,7 @@ const finalRowTestimonials = [
     role: "Managing Director",
     image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/kara-dAd14NxoHHhOrgdq7hmcUXHjaDiDUj.jpg",
     quote:
-      "I had shopped multiple executive health coaching programs prior to joining Metrics Health and a year in I can honestly say I'm so glad I joined this one. I've lost the post partum weight, gained strength, become my most vibrant and healthiest self and done so all while growing my business and being the Mom I want to be. Metrics truly gets the needs of ambitious women like no other."
+      "I had shopped multiple executive health coaching programs prior to joining Metrics Health and a year in I can honestly say I'm so glad I joined this one. I've lost the post partum weight, gained strength, became my most vibrant and healthiest self and done so all while growing my business and being the Mom I want to be. Metrics truly gets the needs of ambitious women like no other."
   },
   {
     name: "Krissy H.",
@@ -150,7 +151,7 @@ const finalRowTestimonials = [
 ]
 
 const allTestimonials = [...mainTestimonials, ...finalRowTestimonials]
-const testimonialsFiltered = allTestimonials.filter((t) => !["Suzy"].includes(t.name))
+const testimonialsFiltered = allTestimonials.filter((t) => !["Suzy R."].includes(t.name))
 
 const faqItems = [
   {
@@ -189,10 +190,27 @@ interface WaitlistFormData {
   challenges: string
 }
 
+interface CaseStudy {
+  id: number;
+  name: string;
+  title: string;
+  beforeImage: string;
+  afterImage: string;
+  transformationImage: string;
+  transformationImages: string[];
+  metrics: string[];
+  summary: string;
+  fullStory: string;
+}
+
 export default function Home() {
   const [email, setEmail] = useState("")
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [selectedCase, setSelectedCase] = useState<CaseStudy | null>(null)
+  const [isTransformationModalOpen, setIsTransformationModalOpen] = useState(false)
+  const [currentImageIndexes, setCurrentImageIndexes] = useState<Record<number, number>>({})
+  const [modalImageIndex, setModalImageIndex] = useState(0)
 
   const handleJoinWaitlist = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -234,6 +252,103 @@ export default function Home() {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  // Case studies data
+  const caseStudies: CaseStudy[] = [
+    {
+      id: 1,
+      name: "Case Study 1",
+      title: "16-Week Executive Transformation",
+      beforeImage: "/placeholder.jpg",
+      afterImage: "/placeholder-user.jpg",
+      transformationImage: "https://i.imgur.com/9UIsBWC.jpg",
+      transformationImages: ["https://i.imgur.com/9UIsBWC.jpg", "https://i.imgur.com/LQMCZt7.jpg"],
+      metrics: ["-12% Body Fat Loss", "+8 lbs Muscle Gain", "Increased Energy"],
+      summary: "Executive with 2 small kids who transformed her body while working 50+ hour weeks.",
+      fullStory: "This Executive came to us as a busy executive and mother of 2, working 50+ hours per week. Her goals were to lose body fat, increase energy levels, and create sustainable healthy habits that fit her busy lifestyle. Using our tailored approach, she was able to achieve remarkable results in just 16 weeks without disrupting her demanding schedule.\n\nKey Changes:\n- Customized nutrition plan focused on protein timing and fast meal prep and dining out strategies for busy weekdays\n- Strategic 20-30-minute workouts 3x per week with optional 10-minute mobility sessions\n- Implementation of stress management techniques\n- Data-driven sleep optimization protocol\n\nShe not only achieved her physical transformation goals but also reported a 50% increase in energy levels, better cognitive function during important meetings, and established sustainable habits she can use with her family in her busiest seasons."
+    },
+    {
+      id: 2,
+      name: "Case Study 2",
+      title: "12-Week Executive Transformation",
+      beforeImage: "/placeholder.jpg",
+      afterImage: "/placeholder-user.jpg",
+      transformationImage: "https://i.imgur.com/SnsTj6m.png",
+      transformationImages: ["https://i.imgur.com/SnsTj6m.png", "https://i.imgur.com/NLFFzFK.png"],
+      metrics: ["-5% Body Fat Loss", "+5 lbs Muscle Gain", "Increased Energy"],
+      summary: "Executive Mom who reclaimed her body and vitality.",
+      fullStory: "This Executive and Mom had been spinning her wheels for years trying to get a more toned physique before she joined Metrics Health. She was struggling with fatigue and diminished strength levels.\n\nOur Approach:\n- Metabolic health restoration through strategic nutrition optimization\n- Recovery-focused movement plan customized to varying energy levels\n- Hormone optimization through precise nutrition protocols\n- Daily micro-habits that worked within her Executive and Mom lifestyle\n\nResults:\n- Lost 5% body fat and gained 5 lbs muscle in 3 months. \n- Reported 50% increase in daily energy levels\n- Successfully cut down on exercise time to spend more time enjoying Motherhood.\n- Established sustainable routines that work with her busy lifestyle\n\nShe credits her physical transformation with giving her the energy and mental clarity needed to be the best Mom she can be, proving that even the busiest Moms can prioritize health and tone up with the right system."
+    },
+    {
+      id: 3,
+      name: "Case Study 3",
+      title: "12-Week Executive Transformation",
+      beforeImage: "/placeholder.jpg",
+      afterImage: "/placeholder-user.jpg",
+      transformationImage: "https://i.imgur.com/ZnULWUt.png",
+      transformationImages: ["https://i.imgur.com/ZnULWUt.png", "https://i.imgur.com/ToxQxwH.png"],
+      metrics: ["-8% Body Fat Reduction", "+7 lbs Muscle gain"],
+      summary: "Founder Who Overcame Her 'Bad Genetics'",
+      fullStory: "This Founder came to Metrics Health wanting to get in the best shape of her life and build muscle before getting pregnant. Despite being highly successful professionally, she was unable to figure out how to achieve the energy and aesthetics she wanted in her appearance. She thought she was always doomed to hold belly fat due to her genetics.\n\nCustomized Protocol:\n- Diagnostic metabolic analysis identified cellular energy deficiencies\n- Therapeutic nutrition to restore metabolic flexibility\n- Strategic stress-reduction techniques integrated into her executive schedule\n- Precision approach to sleep quality improvement\n\nTransformation:\n- 8% reduction in body fat while maintaining muscle mass\n- Eliminated brain fog and improved cognitive function (measured through cognitive testing)\n- \n- Significant improvements in energy and body composition allowing her to think clearer and be more productive\n\nThis Founder's case exemplifies how Founder performance and health are intrinsically linked. By optimizing her physical health, her leadership capabilities and career trajectory accelerated simultaneously."
+    },
+    {
+      id: 4,
+      name: "Case Study 4",
+      title: "8-Month Executive Transformation",
+      beforeImage: "/placeholder.jpg",
+      afterImage: "/placeholder-user.jpg",
+      transformationImage: "https://i.imgur.com/rQW6N7L.png",
+      transformationImages: ["https://i.imgur.com/rQW6N7L.png", "https://i.imgur.com/ObUTg8w.png"],
+      metrics: ["-30 lbs Fat Loss", "+8 lbs Muscle Gain"],
+      summary: "Founder Who Reclaimed Her Body Post 2 Babies",
+      fullStory: "This 38 year old Founder wanted to get her body back post 2 babies. Despite running a 7-figure business and taking care of two small children (with help) she was determined to figure out how to make the rules of fitness work for her busy lifestyle.\n\nOur Comprehensive Approach:\n- Full biomarker panel to identify specific metabolic inefficiencies\n- Age-optimized hormone-supportive nutrition protocol\n- Resistance training customized for postpartum women\n- Precision supplementation based on lab results\n\nRemarkable Results:\n- 30 pounds of fat loss while gaining 7 pounds of muscle on Dexascan\n- Bloodwork showed biological age markers improved by 8+ years\n- Energy and resilience levels comparable to her 20s\n\nThis Founder's transformation proves that Motherhood and career goals are not barriers to achieving remarkable health outcomes when using a data-driven approach. Her case exemplifies our specialized protocols for executive women seeking to optimize health and performance."
+    }
+  ]
+
+  // Functions to navigate between images
+  const nextImage = (caseStudyId: number, isModal: boolean = false) => {
+    if (isModal && selectedCase) {
+      setModalImageIndex((prev) => 
+        prev < selectedCase.transformationImages.length - 1 ? prev + 1 : 0
+      );
+    } else {
+      setCurrentImageIndexes((prev) => {
+        const currentIndex = prev[caseStudyId] || 0;
+        const caseStudy = caseStudies.find(c => c.id === caseStudyId);
+        if (!caseStudy) return prev;
+        
+        return {
+          ...prev,
+          [caseStudyId]: currentIndex < caseStudy.transformationImages.length - 1 ? currentIndex + 1 : 0
+        };
+      });
+    }
+  };
+
+  const prevImage = (caseStudyId: number, isModal: boolean = false) => {
+    if (isModal && selectedCase) {
+      setModalImageIndex((prev) => 
+        prev > 0 ? prev - 1 : selectedCase.transformationImages.length - 1
+      );
+    } else {
+      setCurrentImageIndexes((prev) => {
+        const currentIndex = prev[caseStudyId] || 0;
+        const caseStudy = caseStudies.find(c => c.id === caseStudyId);
+        if (!caseStudy) return prev;
+        
+        return {
+          ...prev,
+          [caseStudyId]: currentIndex > 0 ? currentIndex - 1 : caseStudy.transformationImages.length - 1
+        };
+      });
+    }
+  };
+
+  const openTransformationModal = (caseStudy: CaseStudy) => {
+    setSelectedCase(caseStudy);
+    setModalImageIndex(currentImageIndexes[caseStudy.id] || 0);
+    setIsTransformationModalOpen(true);
   }
 
   return (
@@ -291,7 +406,7 @@ export default function Home() {
                   className="h-12 rounded-xl bg-black px-8 text-white hover:bg-black/90"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Joining..." : "Join Waitlist"}
+                  {isSubmitting ? "Applying..." : "Apply for Coaching"}
                 </Button>
               </form>
 
@@ -321,6 +436,94 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        {/* Transformation Stories Section */}
+        <section className="mt-24 px-4 md:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl">
+            <h2 className="text-3xl font-bold text-center mb-2">Transformation Stories</h2>
+            <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">Real results from real clients who committed to the Metrics Health approach.</p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {caseStudies.map((caseStudy) => (
+                <div key={caseStudy.id} className="bg-white rounded-xl shadow-md overflow-hidden">
+                  <div 
+                    className="relative group cursor-pointer" 
+                    onClick={() => openTransformationModal(caseStudy)}
+                  >
+                    <Image 
+                      src={caseStudy.transformationImages[currentImageIndexes[caseStudy.id] || 0]}
+                      alt={`${caseStudy.name} transformation`}
+                      width={600} 
+                      height={400} 
+                      className="w-full h-80 object-cover"
+                      unoptimized={true}
+                    />
+                    {caseStudy.transformationImages.length > 1 && (
+                      <>
+                        <button 
+                          className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            prevImage(caseStudy.id);
+                          }}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                          </svg>
+                        </button>
+                        <button 
+                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            nextImage(caseStudy.id);
+                          }}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
+                          {caseStudy.transformationImages.map((_, index) => (
+                            <span 
+                              key={index} 
+                              className={`h-1.5 rounded-full ${index === (currentImageIndexes[caseStudy.id] || 0) ? 'w-4 bg-white' : 'w-1.5 bg-white/60'}`}
+                            />
+                          ))}
+                        </div>
+                      </>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center">
+                      <span className="text-white font-medium px-4 py-2">Click to see full story</span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <h3 className="font-bold text-xl mb-2">{caseStudy.title}</h3>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {caseStudy.metrics.map((metric, index) => (
+                        <div key={index} className="bg-blue-100 px-2 py-1 rounded text-xs text-blue-800">{metric}</div>
+                      ))}
+                    </div>
+                    <p className="text-gray-700 text-sm mb-4">
+                      {caseStudy.summary}
+                    </p>
+                    <button 
+                      className="text-blue-600 font-medium text-sm flex items-center"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openTransformationModal(caseStudy);
+                      }}
+                    >
+                      Read full story
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* Testimonials Section */}
         <section className="mt-24 px-4 md:px-6 lg:px-8">
@@ -355,7 +558,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* FAQ Section */}
+        {/* FAQ Section - Temporarily Hidden */}
+        {/* 
         <section className="mt-32 px-4 md:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
             <h2 className="text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
@@ -369,11 +573,38 @@ export default function Home() {
             </Accordion>
           </div>
         </section>
+        */}
+
+        {/* Bottom CTA */}
+        <section className="mt-24 px-4 md:px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-2xl font-bold mb-6">Ready to Transform Your Health?</h2>
+            
+            <form className="flex justify-center gap-2">
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                className="h-12 max-w-xs rounded-xl bg-blue-100/50"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <Button 
+                onClick={() => setIsModalOpen(true)}
+                className="h-12 rounded-xl bg-black px-8 text-white hover:bg-black/90"
+              >
+                Apply for Coaching
+              </Button>
+            </form>
+            <p className="text-xs text-gray-500 mt-2">We will never sell your information or spam you</p>
+          </div>
+        </section>
+
       </div>
 
       {/* Footer */}
       <footer className="mt-16 py-6 text-center text-sm text-gray-500">
-        Metrics Health International Copyright 2025
+        © 2025 Metrics Health International LLC
       </footer>
 
       <WaitlistModal
@@ -382,6 +613,90 @@ export default function Home() {
         email={email}
         onSubmit={handleSubmit}
       />
+
+      {/* Transformation Story Modal */}
+      <Dialog 
+        open={isTransformationModalOpen} 
+        onOpenChange={setIsTransformationModalOpen}
+      >
+        {selectedCase && (
+          <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">{selectedCase.name}'s Transformation</DialogTitle>
+              <DialogDescription>
+                {selectedCase.title}
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="mt-4">
+              <div className="mb-6 relative">
+                <Image 
+                  src={selectedCase.transformationImages[modalImageIndex]}
+                  alt={`${selectedCase.name} transformation`}
+                  width={600} 
+                  height={400} 
+                  className="w-full h-auto rounded-md"
+                  unoptimized={true}
+                />
+                {selectedCase.transformationImages.length > 1 && (
+                  <>
+                    <button 
+                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white rounded-full p-1 hover:bg-black/70"
+                      onClick={() => prevImage(selectedCase.id, true)}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button 
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white rounded-full p-1 hover:bg-black/70"
+                      onClick={() => nextImage(selectedCase.id, true)}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                    <div className="absolute -bottom-6 left-0 right-0 flex justify-center gap-2 mb-2">
+                      {selectedCase.transformationImages.map((_, index) => (
+                        <button 
+                          key={index} 
+                          className={`h-2 rounded-full transition-all ${
+                            index === modalImageIndex ? 'w-6 bg-blue-500' : 'w-2 bg-gray-300 hover:bg-gray-400'
+                          }`}
+                          onClick={() => setModalImageIndex(index)}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+              
+              <div className="flex flex-wrap gap-2 mb-4 mt-8">
+                {selectedCase.metrics.map((metric, index) => (
+                  <div key={index} className="bg-blue-100 px-2 py-1 rounded text-xs text-blue-800">{metric}</div>
+                ))}
+              </div>
+              
+              <div className="mt-4 text-sm text-gray-700 whitespace-pre-line">
+                {selectedCase.fullStory}
+              </div>
+              
+              <div className="mt-8 border-t pt-6">
+                <h4 className="font-medium mb-2">Ready for your transformation?</h4>
+                <Button 
+                  onClick={() => {
+                    setIsTransformationModalOpen(false)
+                    setTimeout(() => setIsModalOpen(true), 300)
+                  }}
+                  className="bg-blue-500 hover:bg-blue-600"
+                >
+                  Apply for Coaching
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        )}
+      </Dialog>
     </div>
   )
 }
