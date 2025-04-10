@@ -384,10 +384,10 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-                <span className="text-sm text-gray-500">Transform in 30 days or you don't pay</span>
+                <span className="text-sm text-gray-500">Try Our Approach for 30 Days Risk-Free</span>
               </div>
               <h1 className="font-bold text-[2.75rem] uppercase leading-[0.85] tracking-[-0.03em] lg:text-[3.5rem]">
-                HOW HIGH-ACHIEVING WOMEN REACH HEALTH GOALS ON AUTOPILOT
+                HOW SMART WOMEN REACH HEALTH GOALS ON AUTOPILOT
               </h1>
             </div>
 
@@ -521,6 +521,67 @@ export default function Home() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Our Principles Section */}
+        <section className="mt-24 px-4 md:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl">
+            <h2 className="text-3xl font-bold text-center mb-12">Our Principles</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Principle 1 - Autopilot */}
+              <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center text-center">
+                <div className="bg-blue-100 p-4 rounded-full mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold mb-2">Autopilot</h3>
+                <p className="text-gray-600 text-sm">
+                  Applying the latest research on habit formation, we help our clients start small and scale up to a healthy lifestyle that runs on autopilot.
+                </p>
+              </div>
+              
+              {/* Principle 2 - Minimum Effective Dose */}
+              <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center text-center">
+                <div className="bg-blue-100 p-4 rounded-full mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold mb-2">Minimum Effective Dose Workouts</h3>
+                <p className="text-gray-600 text-sm">
+                  You're strapped on time and stressed enough already. Adding too much work can actually make you reverse progress. Our workouts are custom tailored to your goals and unique genetics. They are no-fluff or filler and backed by the latest evidence to ensure you get the highest return on your exercise time.
+                </p>
+              </div>
+              
+              {/* Principle 3 - Eat What You Love */}
+              <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center text-center">
+                <div className="bg-blue-100 p-4 rounded-full mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold mb-2">Eat What You Love</h3>
+                <p className="text-gray-600 text-sm">
+                  If you can't eat what you love and enjoy your lifestyle, what is the point? Our approach ensures you can maintain your social life and food preferences while still achieving your health goals.
+                </p>
+              </div>
+              
+              {/* Principle 4 - Accountability */}
+              <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center text-center">
+                <div className="bg-blue-100 p-4 rounded-full mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold mb-2">Accountability</h3>
+                <p className="text-gray-600 text-sm">
+                  You have a ton of accountability in your professional life, but very little when it comes to your health. Receiving accountability from an expert coach and peers might be the missing link you've been needing.
+                </p>
+              </div>
             </div>
           </div>
         </section>
