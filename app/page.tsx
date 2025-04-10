@@ -437,6 +437,26 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Video Section */}
+        <section className="mt-16 px-4 md:px-6 lg:px-8">
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="text-3xl font-bold mb-8">Watch What Our Clients Are Saying</h2>
+            <div className="relative w-full aspect-video mx-auto">
+              <script src="https://fast.wistia.com/embed/medias/c1vfvocy2u.jsonp" async></script>
+              <script src="https://fast.wistia.com/assets/external/E-v1.js" async></script>
+              <div className="wistia_responsive_padding" style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
+                <div className="wistia_responsive_wrapper" style={{ height: '100%', left: 0, position: 'absolute', top: 0, width: '100%' }}>
+                  <div className="wistia_embed wistia_async_c1vfvocy2u videoFoam=true" style={{ height: '100%', position: 'relative', width: '100%' }}>
+                    <div className="wistia_swatch" style={{ height: '100%', left: 0, opacity: 1, overflow: 'hidden', position: 'absolute', top: 0, transition: 'opacity 200ms', width: '100%' }}>
+                      <img src="https://fast.wistia.com/embed/medias/c1vfvocy2u/swatch" style={{ filter: 'blur(5px)', height: '100%', objectFit: 'contain', width: '100%' }} alt="" aria-hidden="true" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Transformation Stories Section */}
         <section className="mt-24 px-4 md:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
