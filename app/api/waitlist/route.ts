@@ -68,6 +68,7 @@ async function addToConvertKit(email: string, firstName: string, fields: Record<
     KIT_API_KEY_EXISTS: !!process.env.CONVERTKIT_API_KEY,
     KIT_API_KEY_PREFIX: process.env.CONVERTKIT_API_KEY?.substring(0, 4),
     KIT_FORM_ID: process.env.CONVERTKIT_FORM_ID,
+    KIT_FORM_ID_IS_NUMERIC: !isNaN(Number(process.env.CONVERTKIT_FORM_ID)), // Check if form ID is numeric
   });
   
   // Prepare the request body according to the V4 API docs
