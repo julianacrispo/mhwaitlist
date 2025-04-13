@@ -609,6 +609,7 @@ export default function Home() {
         {/* Testimonials Section */}
         <section className="mt-24 px-4 md:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
+            <h2 className="text-3xl font-bold text-center mb-12">Client Love</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {testimonialsFiltered.map((testimonial, index) => (
                 <div key={index} className="bg-white rounded-xl shadow-lg p-6 flex flex-col h-full">
