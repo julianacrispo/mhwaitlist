@@ -9,7 +9,7 @@ console.log('API Key Status:', {
     length: process.env.RESEND_API_KEY?.length || 0,
     startsWith: process.env.RESEND_API_KEY?.substring(0, 3) || 'none'
   },
-  kit: {
+  convertkit: {
     apiKey: !!process.env.CONVERTKIT_API_KEY,
     formId: !!process.env.CONVERTKIT_FORM_ID
   }
@@ -53,88 +53,51 @@ function validatePhoneNumber(phoneNumber: string, countryCode: string): boolean 
   return pattern.test(phoneNumber);
 }
 
-// Function to add subscriber to Kit.com
-async function addToConvertKit(email: string, firstName: string, fields: Record<string, string>) {
-  if (!process.env.CONVERTKIT_API_KEY || !process.env.CONVERTKIT_FORM_ID) {
-    throw new Error('Kit.com API keys missing');
+// Function to add subscriber to ConvertKit using V3 API
+async function addToConvertKit(email: string, phoneNumber: string, firstName: string = "", lastName: string = "") {
+  const apiKey = process.env.CONVERTKIT_API_KEY;
+  const formId = process.env.CONVERTKIT_FORM_ID;
+
+  if (!apiKey || !formId) {
+    console.error('ConvertKit API Key or Form ID is missing');
+    return { success: false, message: 'ConvertKit configuration is missing' };
   }
-  
-  // Kit.com's correct v4 API endpoint for subscribing to a form
-  // Documentation: https://developers.kit.com/v4#forms-add-subscriber-to-form
-  const url = `https://api.kit.com/v4/forms/${process.env.CONVERTKIT_FORM_ID}/subscribe`;
-  
-  // Log environment variables for debugging (redacted)
-  console.log('Environment variables check:', {
-    KIT_API_KEY_EXISTS: !!process.env.CONVERTKIT_API_KEY,
-    KIT_API_KEY_PREFIX: process.env.CONVERTKIT_API_KEY?.substring(0, 4),
-    KIT_FORM_ID: process.env.CONVERTKIT_FORM_ID,
-    KIT_FORM_ID_IS_NUMERIC: !isNaN(Number(process.env.CONVERTKIT_FORM_ID)), // Check if form ID is numeric
-  });
-  
-  // Prepare the request body according to the V4 API docs
-  // Note: in v4 API, api_key is NOT in the body, it's only in the header
-  const data: { 
-    email: string; 
-    first_name: string; 
-    fields?: Record<string, string>;
-  } = {
+
+  console.log(`Adding to ConvertKit: email=${email}, phone=${phoneNumber}, firstName=${firstName}, lastName=${lastName}`);
+
+  const payload = {
     email,
-    first_name: firstName
+    first_name: firstName,
+    fields: {
+      phone_number: phoneNumber,
+      last_name: lastName,
+    },
   };
-  
-  // We need to add the custom fields if they exist
-  if (Object.keys(fields).length > 0) {
-    data.fields = fields;
-  }
-  
+
+  console.log('ConvertKit payload:', payload);
+
   try {
-    console.log('Kit.com payload:', {
-      email,
-      first_name: firstName,
-      fields_count: Object.keys(fields).length
-    });
-    
-    // Make request to Kit.com API using the v4 header format
-    console.log(`Making request to Kit.com v4 API: ${url}`);
-    const response = await fetch(url, {
+    // Using the API key as a query parameter instead of in the body
+    const response = await fetch(`https://api.convertkit.com/v3/forms/${formId}/subscribe?api_key=${apiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-Kit-Api-Key': process.env.CONVERTKIT_API_KEY
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload),
     });
-    
-    console.log('Kit.com API response status:', response.status);
-    
-    // Get response for logging/debugging
-    const responseText = await response.text();
-    console.log('Kit.com API response body:', responseText.substring(0, 200) + (responseText.length > 200 ? '...' : ''));
-    
-    // Parse response if it's JSON
-    let responseData;
-    try {
-      responseData = JSON.parse(responseText);
-    } catch (e) {
-      responseData = { raw: responseText };
-      console.error('Failed to parse Kit.com response as JSON:', e);
-    }
-    
+
+    const data = await response.json();
+    console.log('ConvertKit response:', data);
+
     if (!response.ok) {
-      console.error('Non-OK response from Kit API:', {
-        status: response.status,
-        headers: Object.fromEntries(response.headers.entries()),
-        body: responseData
-      });
-      throw new Error(`Kit.com API error: ${response.status} - ${JSON.stringify(responseData)}`);
+      console.error('ConvertKit error:', data);
+      return { success: false, message: 'Failed to add to ConvertKit', error: data };
     }
-    
-    console.log('Kit.com API success! Subscriber added.');
-    return responseData;
+
+    return { success: true, message: 'Added to ConvertKit successfully', data };
   } catch (error) {
-    console.error('Kit.com API error:', error);
-    throw error;
+    console.error('ConvertKit error:', error);
+    return { success: false, message: 'Failed to add to ConvertKit', error };
   }
 }
 
@@ -202,31 +165,47 @@ export async function POST(request: Request) {
     });
     console.log('Waitlist entry created:', waitlistEntry);
 
-    // Send to Kit.com (formerly ConvertKit)
-    try {
-      console.log('Attempting to add subscriber to Kit.com:', email);
-      
-      // Prepare custom fields for Kit.com
-      const customFields = {
-        company: company || '',
-        phone: `${countryCode || "+1"} ${formattedPhoneNumber}`,
-        goals: goals,
-        challenges: challenges
-      };
-      
-      // Add to Kit.com
-      const kitResponse = await addToConvertKit(email, name, customFields);
-      console.log('Kit.com subscription successful:', kitResponse);
-    } catch (kitError) {
-      console.error('Error adding to Kit.com:', kitError);
-      // Continue execution even if Kit.com subscription fails
-      if (kitError instanceof Error) {
-        console.error('Kit.com error details:', {
-          message: kitError.message,
-          stack: kitError.stack,
-          name: kitError.name,
+    // Send to ConvertKit
+    if (process.env.CONVERTKIT_API_KEY && process.env.CONVERTKIT_FORM_ID) {
+      try {
+        console.log('Attempting to add subscriber to ConvertKit:', email);
+        
+        // Prepare custom fields for ConvertKit
+        const customFields = {
+          company: company || '',
+          phone: `${countryCode || "+1"} ${formattedPhoneNumber}`,
+          goals: goals,
+          challenges: challenges
+        };
+        
+        // Log ConvertKit configuration for debugging
+        console.log('ConvertKit configuration:', {
+          API_KEY_EXISTS: !!process.env.CONVERTKIT_API_KEY,
+          API_KEY_LENGTH: process.env.CONVERTKIT_API_KEY?.length || 0,
+          API_KEY_PREFIX: process.env.CONVERTKIT_API_KEY?.substring(0, 4) || '',
+          FORM_ID: process.env.CONVERTKIT_FORM_ID,
+          FORM_ID_TYPE: typeof process.env.CONVERTKIT_FORM_ID,
+          FORM_ID_IS_NUMERIC: !isNaN(Number(process.env.CONVERTKIT_FORM_ID))
         });
+        
+        // Add to ConvertKit
+        const ckResponse = await addToConvertKit(email, formattedPhoneNumber, name, '');
+        console.log('ConvertKit subscription successful:', ckResponse);
+      } catch (ckError) {
+        // Don't throw an error, just log it - form submission will continue
+        console.error('Error adding to ConvertKit:', ckError);
+        // Continue execution even if ConvertKit subscription fails
+        if (ckError instanceof Error) {
+          console.error('ConvertKit error details:', {
+            message: ckError.message,
+            stack: ckError.stack,
+            name: ckError.name,
+          });
+        }
+        console.log('Continuing form submission despite ConvertKit error - this will not affect the user experience');
       }
+    } else {
+      console.log('ConvertKit integration skipped - API key or form ID missing');
     }
 
     // Optionally still send with Resend during transition (you can remove this later)
