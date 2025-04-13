@@ -205,26 +205,7 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit }) {
       // Format challenges for submission
       const challengesFormatted = formData.challenges.join(', ')
       
-      // Create form data for direct ConvertKit submission
-      const convertKitFormData = new FormData()
-      convertKitFormData.append('email', formData.email)
-      convertKitFormData.append('first_name', formData.name)
-      convertKitFormData.append('fields[company]', formData.company || '')
-      convertKitFormData.append('fields[phone]', `${formData.countryCode} ${formData.phoneNumber.replace(/\D/g, '')}`)
-      convertKitFormData.append('fields[goals]', formData.goals)
-      convertKitFormData.append('fields[challenges]', challengesFormatted)
-      
-      // Submit directly to ConvertKit
-      const formId = '1e4c7e7c60' // Your ConvertKit form ID
-      const response = await fetch(`https://app.convertkit.com/forms/${formId}/subscriptions`, {
-        method: 'POST',
-        body: convertKitFormData,
-        headers: {
-          'Accept': 'application/json',
-        },
-      })
-      
-      // Also save to MongoDB through your existing API (optional)
+      // Also save to MongoDB through your existing API
       // Format phone number to remove any non-digit characters before submitting
       const formattedData = {
         ...formData,
@@ -232,6 +213,7 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit }) {
         challenges: challengesFormatted
       }
       
+      // This will submit to both MongoDB and also properly send to ConvertKit through the API
       await onSubmit(formattedData)
       
       toast.success("Form submitted successfully!")

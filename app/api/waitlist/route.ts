@@ -59,10 +59,10 @@ async function addToConvertKit(email: string, firstName: string, fields: Record<
     throw new Error('ConvertKit API keys missing');
   }
   
-  // ConvertKit API endpoint for forms
+  // The correct ConvertKit API endpoint for adding subscribers
   const url = `https://api.convertkit.com/v3/forms/${process.env.CONVERTKIT_FORM_ID}/subscribe`;
   
-  // Prepare the request body
+  // Prepare the request body with proper data structure
   const data = {
     api_key: process.env.CONVERTKIT_API_KEY,
     email: email,
@@ -71,6 +71,8 @@ async function addToConvertKit(email: string, firstName: string, fields: Record<
   };
   
   try {
+    console.log('ConvertKit payload:', data);
+    
     // Make request to ConvertKit API
     const response = await fetch(url, {
       method: 'POST',
@@ -80,12 +82,24 @@ async function addToConvertKit(email: string, firstName: string, fields: Record<
       body: JSON.stringify(data),
     });
     
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`ConvertKit API error: ${response.status} - ${JSON.stringify(errorData)}`);
+    // Get response for logging/debugging
+    const responseText = await response.text();
+    console.log('ConvertKit API response status:', response.status);
+    console.log('ConvertKit API response:', responseText);
+    
+    // Parse response if it's JSON
+    let responseData;
+    try {
+      responseData = JSON.parse(responseText);
+    } catch (e) {
+      responseData = { raw: responseText };
     }
     
-    return await response.json();
+    if (!response.ok) {
+      throw new Error(`ConvertKit API error: ${response.status} - ${JSON.stringify(responseData)}`);
+    }
+    
+    return responseData;
   } catch (error) {
     console.error('ConvertKit API error:', error);
     throw error;
