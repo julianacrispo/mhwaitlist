@@ -9,7 +9,7 @@ console.log('API Key Status:', {
     length: process.env.RESEND_API_KEY?.length || 0,
     startsWith: process.env.RESEND_API_KEY?.substring(0, 3) || 'none'
   },
-  convertkit: {
+  kit: {
     apiKey: !!process.env.CONVERTKIT_API_KEY,
     formId: !!process.env.CONVERTKIT_FORM_ID
   }
@@ -53,27 +53,41 @@ function validatePhoneNumber(phoneNumber: string, countryCode: string): boolean 
   return pattern.test(phoneNumber);
 }
 
-// Function to add subscriber to ConvertKit
+// Function to add subscriber to ConvertKit (now Kit.com)
 async function addToConvertKit(email: string, firstName: string, fields: Record<string, string>) {
   if (!process.env.CONVERTKIT_API_KEY || !process.env.CONVERTKIT_FORM_ID) {
-    throw new Error('ConvertKit API keys missing');
+    throw new Error('Kit.com API keys missing');
   }
   
-  // The correct ConvertKit API endpoint for adding subscribers
+  // Kit.com's updated API endpoint (still uses the convertkit domain for API)
   const url = `https://api.convertkit.com/v3/forms/${process.env.CONVERTKIT_FORM_ID}/subscribe`;
   
-  // Prepare the request body with proper data structure
+  // Log all environment variables to debug
+  console.log('Environment variables check:', {
+    KIT_API_KEY_EXISTS: !!process.env.CONVERTKIT_API_KEY,
+    KIT_API_KEY_PREFIX: process.env.CONVERTKIT_API_KEY?.substring(0, 4),
+    KIT_FORM_ID: process.env.CONVERTKIT_FORM_ID,
+  });
+  
+  // Prepare the request body with proper data structure for Kit.com API
   const data = {
     api_key: process.env.CONVERTKIT_API_KEY,
     email: email,
     first_name: firstName,
-    fields: fields
+    fields
   };
   
   try {
-    console.log('ConvertKit payload:', data);
+    console.log('Kit.com payload (redacted):', {
+      ...data,
+      api_key: '[REDACTED]', // Don't log the full API key
+      email,
+      first_name: firstName,
+      fields
+    });
     
-    // Make request to ConvertKit API
+    // Make request to Kit.com API with expanded debugging
+    console.log(`Making request to Kit.com API: ${url}`);
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -82,10 +96,12 @@ async function addToConvertKit(email: string, firstName: string, fields: Record<
       body: JSON.stringify(data),
     });
     
+    console.log('Kit.com API response status:', response.status);
+    console.log('Kit.com API response headers:', Object.fromEntries(response.headers.entries()));
+    
     // Get response for logging/debugging
     const responseText = await response.text();
-    console.log('ConvertKit API response status:', response.status);
-    console.log('ConvertKit API response:', responseText);
+    console.log('Kit.com API response body:', responseText);
     
     // Parse response if it's JSON
     let responseData;
@@ -93,15 +109,16 @@ async function addToConvertKit(email: string, firstName: string, fields: Record<
       responseData = JSON.parse(responseText);
     } catch (e) {
       responseData = { raw: responseText };
+      console.error('Failed to parse Kit.com response as JSON:', e);
     }
     
     if (!response.ok) {
-      throw new Error(`ConvertKit API error: ${response.status} - ${JSON.stringify(responseData)}`);
+      throw new Error(`Kit.com API error: ${response.status} - ${JSON.stringify(responseData)}`);
     }
     
     return responseData;
   } catch (error) {
-    console.error('ConvertKit API error:', error);
+    console.error('Kit.com API error:', error);
     throw error;
   }
 }
@@ -170,11 +187,11 @@ export async function POST(request: Request) {
     });
     console.log('Waitlist entry created:', waitlistEntry);
 
-    // Send to ConvertKit
+    // Send to Kit.com (formerly ConvertKit)
     try {
-      console.log('Attempting to add subscriber to ConvertKit:', email);
+      console.log('Attempting to add subscriber to Kit.com:', email);
       
-      // Prepare custom fields for ConvertKit
+      // Prepare custom fields for Kit.com
       const customFields = {
         company: company || '',
         phone: `${countryCode || "+1"} ${formattedPhoneNumber}`,
@@ -182,17 +199,17 @@ export async function POST(request: Request) {
         challenges: challenges
       };
       
-      // Add to ConvertKit
-      const ckResponse = await addToConvertKit(email, name, customFields);
-      console.log('ConvertKit subscription successful:', ckResponse);
-    } catch (ckError) {
-      console.error('Error adding to ConvertKit:', ckError);
-      // Continue execution even if ConvertKit fails
-      if (ckError instanceof Error) {
-        console.error('ConvertKit error details:', {
-          message: ckError.message,
-          stack: ckError.stack,
-          name: ckError.name,
+      // Add to Kit.com
+      const kitResponse = await addToConvertKit(email, name, customFields);
+      console.log('Kit.com subscription successful:', kitResponse);
+    } catch (kitError) {
+      console.error('Error adding to Kit.com:', kitError);
+      // Continue execution even if Kit.com subscription fails
+      if (kitError instanceof Error) {
+        console.error('Kit.com error details:', {
+          message: kitError.message,
+          stack: kitError.stack,
+          name: kitError.name,
         });
       }
     }

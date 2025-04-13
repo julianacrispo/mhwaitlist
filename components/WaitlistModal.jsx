@@ -78,6 +78,9 @@ const challengeOptions = [
   "I'm uncertain about what to do to reach the goal"
 ]
 
+// Add Kit.com form ID for direct embed script
+const KIT_FORM_ID = '1e4c7e7c60'
+
 // Phone number validation patterns for different country codes
 const phonePatterns = {
   "+1": {
@@ -205,7 +208,6 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit }) {
       // Format challenges for submission
       const challengesFormatted = formData.challenges.join(', ')
       
-      // Also save to MongoDB through your existing API
       // Format phone number to remove any non-digit characters before submitting
       const formattedData = {
         ...formData,
@@ -213,10 +215,10 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit }) {
         challenges: challengesFormatted
       }
       
-      // This will submit to both MongoDB and also properly send to ConvertKit through the API
+      // Submit the data to the API
       await onSubmit(formattedData)
       
-      toast.success("Form submitted successfully!")
+      // Let the parent component handle success messaging
       console.log('Form submission successful')
       onClose()
     } catch (error) {
