@@ -2,13 +2,20 @@ import { connectDB, Waitlist } from '@/lib/mongodb';
 import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
 
-// Log the Resend API key status (without exposing the actual key)
-console.log('Resend API Key Status:', {
-  exists: !!process.env.RESEND_API_KEY,
-  length: process.env.RESEND_API_KEY?.length || 0,
-  startsWith: process.env.RESEND_API_KEY?.substring(0, 3) || 'none'
+// Log the environment variable status
+console.log('API Key Status:', {
+  resend: {
+    exists: !!process.env.RESEND_API_KEY,
+    length: process.env.RESEND_API_KEY?.length || 0,
+    startsWith: process.env.RESEND_API_KEY?.substring(0, 3) || 'none'
+  },
+  convertkit: {
+    apiKey: !!process.env.CONVERTKIT_API_KEY,
+    formId: !!process.env.CONVERTKIT_FORM_ID
+  }
 });
 
+// Initialize Resend
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Phone number validation patterns
@@ -44,6 +51,45 @@ function validatePhoneNumber(phoneNumber: string, countryCode: string): boolean 
   // Check pattern
   const pattern = new RegExp(patternInfo.pattern);
   return pattern.test(phoneNumber);
+}
+
+// Function to add subscriber to ConvertKit
+async function addToConvertKit(email: string, firstName: string, fields: Record<string, string>) {
+  if (!process.env.CONVERTKIT_API_KEY || !process.env.CONVERTKIT_FORM_ID) {
+    throw new Error('ConvertKit API keys missing');
+  }
+  
+  // ConvertKit API endpoint for forms
+  const url = `https://api.convertkit.com/v3/forms/${process.env.CONVERTKIT_FORM_ID}/subscribe`;
+  
+  // Prepare the request body
+  const data = {
+    api_key: process.env.CONVERTKIT_API_KEY,
+    email: email,
+    first_name: firstName,
+    fields: fields
+  };
+  
+  try {
+    // Make request to ConvertKit API
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`ConvertKit API error: ${response.status} - ${JSON.stringify(errorData)}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('ConvertKit API error:', error);
+    throw error;
+  }
 }
 
 export async function POST(request: Request) {
@@ -110,10 +156,37 @@ export async function POST(request: Request) {
     });
     console.log('Waitlist entry created:', waitlistEntry);
 
-    // Send confirmation email
+    // Send to ConvertKit
+    try {
+      console.log('Attempting to add subscriber to ConvertKit:', email);
+      
+      // Prepare custom fields for ConvertKit
+      const customFields = {
+        company: company || '',
+        phone: `${countryCode || "+1"} ${formattedPhoneNumber}`,
+        goals: goals,
+        challenges: challenges
+      };
+      
+      // Add to ConvertKit
+      const ckResponse = await addToConvertKit(email, name, customFields);
+      console.log('ConvertKit subscription successful:', ckResponse);
+    } catch (ckError) {
+      console.error('Error adding to ConvertKit:', ckError);
+      // Continue execution even if ConvertKit fails
+      if (ckError instanceof Error) {
+        console.error('ConvertKit error details:', {
+          message: ckError.message,
+          stack: ckError.stack,
+          name: ckError.name,
+        });
+      }
+    }
+
+    // Optionally still send with Resend during transition (you can remove this later)
     if (process.env.RESEND_API_KEY) {
       try {
-        console.log('Attempting to send confirmation email to:', email);
+        console.log('Attempting to send confirmation email via Resend to:', email);
         const emailResponse = await resend.emails.send({
           from: 'Metrics Health <jc@metricshealth.com>',
           to: email,
@@ -135,12 +208,12 @@ export async function POST(request: Request) {
             </div>
           `,
         });
-        console.log('Email sent successfully:', emailResponse);
+        console.log('Resend email sent successfully:', emailResponse);
       } catch (emailError) {
-        console.error('Error sending email:', emailError);
+        console.error('Error sending Resend email:', emailError);
         // Log the full error details
         if (emailError instanceof Error) {
-          console.error('Email error details:', {
+          console.error('Resend email error details:', {
             message: emailError.message,
             stack: emailError.stack,
             name: emailError.name,
