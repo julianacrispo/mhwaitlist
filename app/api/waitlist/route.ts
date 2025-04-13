@@ -53,55 +53,63 @@ function validatePhoneNumber(phoneNumber: string, countryCode: string): boolean 
   return pattern.test(phoneNumber);
 }
 
-// Function to add subscriber to ConvertKit (now Kit.com)
+// Function to add subscriber to Kit.com
 async function addToConvertKit(email: string, firstName: string, fields: Record<string, string>) {
   if (!process.env.CONVERTKIT_API_KEY || !process.env.CONVERTKIT_FORM_ID) {
     throw new Error('Kit.com API keys missing');
   }
   
-  // Kit.com's updated API endpoint (still uses the convertkit domain for API)
-  const url = `https://api.convertkit.com/v3/forms/${process.env.CONVERTKIT_FORM_ID}/subscribe`;
+  // Kit.com's correct v4 API endpoint for subscribing to a form
+  // Documentation: https://developers.kit.com/v4#forms-add-subscriber-to-form
+  const url = `https://api.kit.com/v4/forms/${process.env.CONVERTKIT_FORM_ID}/subscribe`;
   
-  // Log all environment variables to debug
+  // Log environment variables for debugging (redacted)
   console.log('Environment variables check:', {
     KIT_API_KEY_EXISTS: !!process.env.CONVERTKIT_API_KEY,
     KIT_API_KEY_PREFIX: process.env.CONVERTKIT_API_KEY?.substring(0, 4),
     KIT_FORM_ID: process.env.CONVERTKIT_FORM_ID,
   });
   
-  // Prepare the request body with proper data structure for Kit.com API
-  const data = {
-    api_key: process.env.CONVERTKIT_API_KEY,
-    email: email,
-    first_name: firstName,
-    fields
+  // Prepare the request body according to the V4 API docs
+  // Note: in v4 API, api_key is NOT in the body, it's only in the header
+  const data: { 
+    email: string; 
+    first_name: string; 
+    fields?: Record<string, string>;
+  } = {
+    email,
+    first_name: firstName
   };
   
+  // We need to add the custom fields if they exist
+  if (Object.keys(fields).length > 0) {
+    data.fields = fields;
+  }
+  
   try {
-    console.log('Kit.com payload (redacted):', {
-      ...data,
-      api_key: '[REDACTED]', // Don't log the full API key
+    console.log('Kit.com payload:', {
       email,
       first_name: firstName,
-      fields
+      fields_count: Object.keys(fields).length
     });
     
-    // Make request to Kit.com API with expanded debugging
-    console.log(`Making request to Kit.com API: ${url}`);
+    // Make request to Kit.com API using the v4 header format
+    console.log(`Making request to Kit.com v4 API: ${url}`);
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-Kit-Api-Key': process.env.CONVERTKIT_API_KEY
       },
       body: JSON.stringify(data),
     });
     
     console.log('Kit.com API response status:', response.status);
-    console.log('Kit.com API response headers:', Object.fromEntries(response.headers.entries()));
     
     // Get response for logging/debugging
     const responseText = await response.text();
-    console.log('Kit.com API response body:', responseText);
+    console.log('Kit.com API response body:', responseText.substring(0, 200) + (responseText.length > 200 ? '...' : ''));
     
     // Parse response if it's JSON
     let responseData;
@@ -113,9 +121,15 @@ async function addToConvertKit(email: string, firstName: string, fields: Record<
     }
     
     if (!response.ok) {
+      console.error('Non-OK response from Kit API:', {
+        status: response.status,
+        headers: Object.fromEntries(response.headers.entries()),
+        body: responseData
+      });
       throw new Error(`Kit.com API error: ${response.status} - ${JSON.stringify(responseData)}`);
     }
     
+    console.log('Kit.com API success! Subscriber added.');
     return responseData;
   } catch (error) {
     console.error('Kit.com API error:', error);
