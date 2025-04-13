@@ -19,7 +19,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { CheckIcon, X } from "lucide-react"
+import { 
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
 import { toast } from "react-hot-toast"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 // Common country codes
 const countryCodes = [
@@ -38,6 +59,23 @@ const countryCodes = [
   { code: "+971", country: "UAE" },
   { code: "+65", country: "Singapore" },
   { code: "+82", country: "South Korea" },
+]
+
+// Health goal options
+const healthGoalOptions = [
+  "Lose Fat",
+  "Build Muscle",
+  "Tone & Sculpt My Body",
+  "Improve My Metabolism",
+  "Improve My Energy Levels",
+  "Increase Strength"
+]
+
+// Challenge options
+const challengeOptions = [
+  "My attempts aren't working and I need help",
+  "I don't have the time for traditional methods",
+  "I'm uncertain about what to do to reach the goal"
 ]
 
 // Phone number validation patterns for different country codes
@@ -76,9 +114,11 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit }) {
     countryCode: "+1",
     phoneNumber: "",
     goals: "",
-    challenges: "",
+    challenges: [],
   })
   const [phoneError, setPhoneError] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [challengesOpen, setChallengesOpen] = useState(false)
   const patternInfo = getPatternInfo(formData.countryCode)
 
   useEffect(() => {
@@ -125,6 +165,23 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit }) {
     setFormData({ ...formData, phoneNumber: value })
   }
 
+  const handleChallengeToggle = (challenge) => {
+    setFormData(prev => {
+      const currentChallenges = [...prev.challenges]
+      if (currentChallenges.includes(challenge)) {
+        return {
+          ...prev,
+          challenges: currentChallenges.filter(c => c !== challenge)
+        }
+      } else {
+        return {
+          ...prev,
+          challenges: [...currentChallenges, challenge]
+        }
+      }
+    })
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     
@@ -134,20 +191,57 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit }) {
       toast.error("Please enter a valid phone number")
       return
     }
+
+    // Validate that at least one challenge is selected
+    if (formData.challenges.length === 0) {
+      toast.error("Please select at least one challenge")
+      return
+    }
     
-    console.log('Modal form data being submitted:', formData)
+    // Set submitting state
+    setIsSubmitting(true)
+    
     try {
+      // Format challenges for submission
+      const challengesFormatted = formData.challenges.join(', ')
+      
+      // Create form data for direct ConvertKit submission
+      const convertKitFormData = new FormData()
+      convertKitFormData.append('email', formData.email)
+      convertKitFormData.append('first_name', formData.name)
+      convertKitFormData.append('fields[company]', formData.company || '')
+      convertKitFormData.append('fields[phone]', `${formData.countryCode} ${formData.phoneNumber.replace(/\D/g, '')}`)
+      convertKitFormData.append('fields[goals]', formData.goals)
+      convertKitFormData.append('fields[challenges]', challengesFormatted)
+      
+      // Submit directly to ConvertKit
+      const formId = '1e4c7e7c60' // Your ConvertKit form ID
+      const response = await fetch(`https://app.convertkit.com/forms/${formId}/subscriptions`, {
+        method: 'POST',
+        body: convertKitFormData,
+        headers: {
+          'Accept': 'application/json',
+        },
+      })
+      
+      // Also save to MongoDB through your existing API (optional)
       // Format phone number to remove any non-digit characters before submitting
       const formattedData = {
         ...formData,
-        phoneNumber: formData.phoneNumber.replace(/\D/g, '')
+        phoneNumber: formData.phoneNumber.replace(/\D/g, ''),
+        challenges: challengesFormatted
       }
       
       await onSubmit(formattedData)
+      
+      toast.success("Form submitted successfully!")
       console.log('Form submission successful')
       onClose()
     } catch (error) {
-      console.error('Error in modal submit:', error)
+      console.error('Error in form submission:', error)
+      toast.error("There was an error submitting the form. Please try again.")
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -172,7 +266,7 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit }) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
+            <Label htmlFor="name">Name</Label>
             <Input
               id="name"
               required
@@ -227,30 +321,88 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit }) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="goals">What are your main health goals?</Label>
-            <Textarea
+            <Label htmlFor="goals">What is your #1 goal right now?</Label>
+            <Select
               id="goals"
               required
               value={formData.goals}
-              onChange={(e) => setFormData({ ...formData, goals: e.target.value })}
-              placeholder="e.g., Weight loss, muscle gain, better energy levels..."
-            />
+              onValueChange={(value) => setFormData({ ...formData, goals: value })}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select your primary goal" />
+              </SelectTrigger>
+              <SelectContent>
+                {healthGoalOptions.map((goal) => (
+                  <SelectItem key={goal} value={goal}>
+                    {goal}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
+          
           <div className="space-y-2">
-            <Label htmlFor="challenges">What's your biggest health challenge right now?</Label>
-            <Textarea
-              id="challenges"
-              required
-              value={formData.challenges}
-              onChange={(e) => setFormData({ ...formData, challenges: e.target.value })}
-              placeholder="e.g., Lack of time, stress, inconsistent routine..."
-            />
+            <Label>What are your challenges reaching this goal without 1:1 support? (Select all that apply)</Label>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-between h-auto min-h-10 py-2"
+                >
+                  {formData.challenges.length > 0 ? (
+                    <div className="flex flex-wrap gap-1 mr-2">
+                      {formData.challenges.map(challenge => (
+                        <Badge 
+                          variant="secondary" 
+                          key={challenge}
+                          className="mr-1 mb-1"
+                        >
+                          {challenge}
+                          <button
+                            className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleChallengeToggle(challenge);
+                            }}
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
+                      ))}
+                    </div>
+                  ) : (
+                    <span className="text-muted-foreground">Select challenges...</span>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-[300px]">
+                {challengeOptions.map(challenge => (
+                  <DropdownMenuItem
+                    key={challenge}
+                    onClick={() => handleChallengeToggle(challenge)}
+                    className={cn(
+                      "flex items-center justify-between cursor-pointer py-2",
+                      formData.challenges.includes(challenge) && "bg-accent font-medium"
+                    )}
+                  >
+                    <span>{challenge}</span>
+                    {formData.challenges.includes(challenge) && (
+                      <CheckIcon className="h-4 w-4 ml-2 text-primary" />
+                    )}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
+          
           <div className="flex justify-end space-x-4 pt-4">
-            <Button variant="outline" type="button" onClick={onClose}>
+            <Button variant="outline" type="button" onClick={onClose} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button type="submit">Submit</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Submitting..." : "Submit"}
+            </Button>
           </div>
         </form>
       </DialogContent>
