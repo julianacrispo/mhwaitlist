@@ -402,7 +402,7 @@ export default function Home() {
                   required
                 />
                 <Button 
-                  type="submit" 
+                  type="submit"
                   className="h-12 rounded-xl bg-black px-8 text-white hover:bg-black/90"
                   disabled={isSubmitting}
                 >
@@ -662,7 +662,7 @@ export default function Home() {
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-2xl font-bold mb-6">Ready to Transform Your Health?</h2>
             
-            <form className="flex justify-center gap-2">
+            <form onSubmit={handleJoinWaitlist} className="flex justify-center gap-2">
               <Input
                 type="email"
                 placeholder="Enter your email"
@@ -672,10 +672,11 @@ export default function Home() {
                 required
               />
               <Button 
-                onClick={() => setIsModalOpen(true)}
+                type="submit"
                 className="h-12 rounded-xl bg-black px-8 text-white hover:bg-black/90"
+                disabled={isSubmitting}
               >
-                Apply for Coaching
+                {isSubmitting ? "Applying..." : "Apply for Coaching"}
               </Button>
             </form>
             <p className="text-xs text-gray-500 mt-2">We will never sell your information or spam you</p>
