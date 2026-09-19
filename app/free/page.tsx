@@ -5,29 +5,14 @@ import { Button } from "@/components/ui/button"
 import { Star } from "lucide-react"
 import Image from "next/image"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { useState, useRef, useEffect } from "react"
+import { useState } from "react"
 import { toast } from "react-hot-toast"
 import { WaitlistModal } from "@/components/WaitlistModal.jsx"
 import { Toaster } from "react-hot-toast"
 import { AnimatedText } from "@/components/AnimatedText"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import Script from 'next/script'
-import { useRouter } from "next/navigation"
 
-// Add TypeScript declaration for Calendly
-declare global {
-  interface Window {
-    Calendly?: {
-      initInlineWidget: (options: {
-        url: string;
-        parentElement: HTMLElement | null;
-        prefill?: Record<string, any>;
-        utm?: Record<string, any>;
-      }) => void;
-    };
-  }
-}
-
+// Import all the constant data (testimonials, FAQ items, etc.) from the root page
 const mainTestimonials = [
   {
     name: "Arryn G.",
@@ -41,7 +26,8 @@ const mainTestimonials = [
     role: "Executive Director",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1699468920068-iJhTVRpZPBNYJyjw6I6QyMuuZZRLBG.jpeg",
     quote:
-    "Prior to Metrics Health, I struggled to find balance. In the past year I lost 20 lbs naturally while juggling a career and 3 kids. What's been a game changer is creating habits my family and I can use for life.",  },
+    "Prior to Metrics Health, I struggled to find balance. In the past year I lost 20 lbs naturally while juggling a career and 3 kids. What's been a game changer is creating habits my family and I can use for life.",  
+  },
   {
     name: "Rebecca K.",
     role: "Founder & CEO",
@@ -199,7 +185,7 @@ const faqItems = [
 interface WaitlistFormData {
   email: string
   name: string
-  company?: string // LinkedIn Profile URL
+  company?: string
   countryCode: string
   phoneNumber: string
   goals: string
@@ -219,7 +205,15 @@ interface CaseStudy {
   fullStory: string;
 }
 
-export default function Home() {
+interface WaitlistModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (formData: WaitlistFormData) => Promise<void>;
+  email: string;
+  isSubmitting: boolean;
+}
+
+export default function FreePage() {
   const [email, setEmail] = useState("")
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -227,48 +221,12 @@ export default function Home() {
   const [isTransformationModalOpen, setIsTransformationModalOpen] = useState(false)
   const [currentImageIndexes, setCurrentImageIndexes] = useState<Record<number, number>>({})
   const [modalImageIndex, setModalImageIndex] = useState(0)
-  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
-  const [showApplyButton, setShowApplyButton] = useState(false)
-  const [isCalendlyModalOpen, setIsCalendlyModalOpen] = useState(false)
-  const videoTimerRef = useRef<NodeJS.Timeout | null>(null)
-  const router = useRouter()
-
-  // Function to handle timer for showing apply button
-  useEffect(() => {
-    if (isVideoModalOpen && !showApplyButton) {
-      videoTimerRef.current = setTimeout(() => {
-        setShowApplyButton(true);
-      }, 15000); // 15 seconds
-    }
-
-    return () => {
-      if (videoTimerRef.current) {
-        clearTimeout(videoTimerRef.current);
-      }
-    };
-  }, [isVideoModalOpen, showApplyButton]);
-
-  // Initialize Calendly when modal opens
-  useEffect(() => {
-    if (isCalendlyModalOpen && window.Calendly && typeof window.Calendly.initInlineWidget === 'function') {
-      // Short timeout to ensure the DOM element exists
-      setTimeout(() => {
-        window.Calendly?.initInlineWidget({
-          url: 'https://calendly.com/metricshealthschedule/juliana-crispo-au-pair-intros-clone',
-          parentElement: document.getElementById('calendly-container'),
-          prefill: {},
-          utm: {}
-        });
-      }, 100);
-    }
-  }, [isCalendlyModalOpen]);
 
   const handleJoinWaitlist = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const emailValue = email.trim()
     if (emailValue) {
-      // Redirect to video page instead of showing modal
-      router.push('/video')
+      setIsModalOpen(true)
     } else {
       toast.error('Please enter your email address')
     }
@@ -311,7 +269,7 @@ export default function Home() {
     {
       id: 1,
       name: "Case Study 1",
-      title: "3 Month Transformation",
+      title: "16-Week Transformation",
       beforeImage: "/placeholder.jpg",
       afterImage: "/placeholder-user.jpg",
       transformationImage: "https://i.imgur.com/9UIsBWC.jpg",
@@ -323,7 +281,7 @@ export default function Home() {
     {
       id: 2,
       name: "Case Study 2",
-      title: "3 Month Transformation",
+      title: "12-Week Transformation",
       beforeImage: "/placeholder.jpg",
       afterImage: "/placeholder-user.jpg",
       transformationImage: "https://i.imgur.com/SnsTj6m.png",
@@ -335,7 +293,7 @@ export default function Home() {
     {
       id: 3,
       name: "Case Study 3",
-      title: "3 Month Transformation",
+      title: "12-Week Transformation",
       beforeImage: "/placeholder.jpg",
       afterImage: "/placeholder-user.jpg",
       transformationImage: "https://i.imgur.com/ZnULWUt.png",
@@ -347,7 +305,7 @@ export default function Home() {
     {
       id: 4,
       name: "Case Study 4",
-      title: "6 Month Transformation",
+      title: "8-Month Transformation",
       beforeImage: "/placeholder.jpg",
       afterImage: "/placeholder-user.jpg",
       transformationImage: "https://i.imgur.com/rQW6N7L.png",
@@ -406,22 +364,6 @@ export default function Home() {
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-white to-gray-100">
       <Toaster position="top-center" />
-      
-      {/* Calendly Script */}
-      <Script 
-        src="https://assets.calendly.com/assets/external/widget.js" 
-        strategy="afterInteractive"
-        onLoad={() => {
-          // Initialize Calendly after script loads
-          window.Calendly && window.Calendly.initInlineWidget({
-            url: 'https://calendly.com/metricshealthschedule/juliana-crispo-au-pair-intros-clone',
-            parentElement: document.getElementById('calendly-container'),
-            prefill: {},
-            utm: {}
-          });
-        }}
-      />
-      
       <div className="container mx-auto px-4 py-8">
         {/* Logo */}
         <div className="mb-20 flex justify-center">
@@ -499,77 +441,17 @@ export default function Home() {
                     ))}
                   </div>
                 </div>
-                <p className="text-xs text-gray-600">Loved by 100+ Founders, Execs, and CEOs</p>
+                <p className="text-xs text-gray-600">Loved by 100+ CEOs, Founders and Execs</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Measurable Improvements Section */}
-        <section className="mt-16 px-4 md:px-6 lg:px-8">
-          <div className="mx-auto max-w-4xl text-center">
-            <h2 className="text-2xl font-bold mb-10">Give Us 90 Days and Get:</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {/* Energy Levels */}
-              <div className="flex flex-col items-center">
-                <div className="bg-blue-100 p-4 rounded-full mb-3 flex items-center justify-center">
-                  <span className="text-2xl" role="img" aria-label="energy">⚡</span>
-                </div>
-                <h3 className="font-semibold text-lg">Increased Energy Levels</h3>
-              </div>
-              
-              {/* Cognitive Function */}
-              <div className="flex flex-col items-center">
-                <div className="bg-blue-100 p-4 rounded-full mb-3 flex items-center justify-center">
-                  <span className="text-2xl" role="img" aria-label="brain">🧠</span>
-                </div>
-                <h3 className="font-semibold text-lg">Improved Cognitive Function</h3>
-              </div>
-              
-              {/* Body Composition */}
-              <div className="flex flex-col items-center">
-                <div className="bg-blue-100 p-4 rounded-full mb-3 flex items-center justify-center">
-                  <span className="text-2xl" role="img" aria-label="body">👤</span>
-                </div>
-                <h3 className="font-semibold text-lg">Better Body Composition</h3>
-              </div>
-              
-              {/* Healthspan */}
-              <div className="flex flex-col items-center">
-                <div className="bg-blue-100 p-4 rounded-full mb-3 flex items-center justify-center">
-                  <span className="text-2xl" role="img" aria-label="running">🏃</span>
-                </div>
-                <h3 className="font-semibold text-lg">Up to 10+ Years<br />to Your Life</h3>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Video Section */}
-        <section className="mt-16 px-4 md:px-6 lg:px-8">
-          <div className="mx-auto max-w-4xl text-center">
-            <h2 className="text-3xl font-bold mb-8">Watch What Our Clients Are Saying</h2>
-            <div className="relative w-full aspect-video mx-auto">
-              <script src="https://fast.wistia.com/embed/medias/c1vfvocy2u.jsonp" async></script>
-              <script src="https://fast.wistia.com/assets/external/E-v1.js" async></script>
-              <div className="wistia_responsive_padding" style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
-                <div className="wistia_responsive_wrapper" style={{ height: '100%', left: 0, position: 'absolute', top: 0, width: '100%' }}>
-                  <div className="wistia_embed wistia_async_c1vfvocy2u videoFoam=true" style={{ height: '100%', position: 'relative', width: '100%' }}>
-                    <div className="wistia_swatch" style={{ height: '100%', left: 0, opacity: 1, overflow: 'hidden', position: 'absolute', top: 0, transition: 'opacity 200ms', width: '100%' }}>
-                      <img src="https://fast.wistia.com/embed/medias/c1vfvocy2u/swatch" style={{ filter: 'blur(5px)', height: '100%', objectFit: 'contain', width: '100%' }} alt="" aria-hidden="true" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Transformation Stories Section */}
         <section className="mt-24 px-4 md:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <h2 className="text-3xl font-bold text-center mb-2">Transform from the Inside Out</h2>
-            <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">Real results from busy clients who went from struggling to stress-free.</p>
+            <h2 className="text-3xl font-bold text-center mb-2">Transformation Stories</h2>
+            <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">Real results from real clients who committed to the Metrics Health approach.</p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {caseStudies.map((caseStudy) => (
@@ -610,42 +492,19 @@ export default function Home() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </button>
-                        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
-                          {caseStudy.transformationImages.map((_, index) => (
-                            <span 
-                              key={index} 
-                              className={`h-1.5 rounded-full ${index === (currentImageIndexes[caseStudy.id] || 0) ? 'w-4 bg-white' : 'w-1.5 bg-white/60'}`}
-                            />
-                          ))}
-                        </div>
                       </>
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center">
-                      <span className="text-white font-medium px-4 py-2">Click to see full story</span>
-                    </div>
                   </div>
                   <div className="p-6">
-                    <h3 className="font-bold text-xl mb-2">{caseStudy.title}</h3>
-                    <div className="flex flex-wrap gap-2 mb-3">
+                    <h3 className="text-xl font-semibold mb-2">{caseStudy.title}</h3>
+                    <div className="flex flex-wrap gap-2 mb-4">
                       {caseStudy.metrics.map((metric, index) => (
-                        <div key={index} className="bg-blue-100 px-2 py-1 rounded text-xs text-blue-800">{metric}</div>
+                        <span key={index} className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                          {metric}
+                        </span>
                       ))}
                     </div>
-                    <p className="text-gray-700 text-sm mb-4">
-                      {caseStudy.summary}
-                    </p>
-                    <button 
-                      className="text-blue-600 font-medium text-sm flex items-center"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openTransformationModal(caseStudy);
-                      }}
-                    >
-                      Read full story
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </button>
+                    <p className="text-gray-600">{caseStudy.summary}</p>
                   </div>
                 </div>
               ))}
@@ -653,123 +512,47 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Our Principles Section */}
-        <section className="mt-24 px-4 md:px-6 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <h2 className="text-3xl font-bold text-center mb-12">Our Principles</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Principle 1 - Autopilot */}
-              <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center text-center">
-                <div className="bg-blue-100 p-4 rounded-full mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold mb-2">Autopilot</h3>
-                <p className="text-gray-600 text-sm">
-                  Applying the latest research on habit formation, we help our clients start small and scale up to a healthy lifestyle that runs on autopilot.
-                </p>
-              </div>
-              
-              {/* Principle 2 - Minimum Effective Dose */}
-              <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center text-center">
-                <div className="bg-blue-100 p-4 rounded-full mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold mb-2">Minimum Effective Dose Workouts</h3>
-                <p className="text-gray-600 text-sm">
-                  You're strapped on time and stressed enough already. Adding too much work can actually make you reverse progress. Our workouts are custom tailored to your goals and unique genetics. They are no-fluff or filler and backed by the latest evidence to ensure you get the highest return on your exercise time.
-                </p>
-              </div>
-              
-              {/* Principle 3 - Eat What You Love */}
-              <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center text-center">
-                <div className="bg-blue-100 p-4 rounded-full mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold mb-2">Eat What You Love</h3>
-                <p className="text-gray-600 text-sm">
-                  If you can't eat what you love and enjoy your lifestyle, what is the point? Our approach ensures you can maintain your social life and food preferences while still achieving your health goals.
-                </p>
-              </div>
-              
-              {/* Principle 4 - Accountability */}
-              <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center text-center">
-                <div className="bg-blue-100 p-4 rounded-full mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold mb-2">Accountability</h3>
-                <p className="text-gray-600 text-sm">
-                  You have a ton of accountability in your professional life, but very little when it comes to your health. Receiving accountability from an expert coach and peers might be the missing link you've been needing.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Testimonials Section */}
-        <section className="mt-24 px-4 md:px-6 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <h2 className="text-3xl font-bold text-center mb-12">Client Love</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {testimonialsFiltered.map((testimonial, index) => (
-                <div key={index} className="bg-white rounded-xl shadow-lg p-6 flex flex-col h-full">
-                  <div className="flex items-start mb-4">
-                    <Image
-                      src={testimonial.image || "/placeholder.svg"}
-                      alt={testimonial.name}
-                      width={60}
-                      height={60}
-                      className="rounded-full object-cover mr-4 flex-shrink-0 w-[60px] h-[60px]"
-                      style={{ aspectRatio: "1/1" }}
-                      unoptimized={true}
-                    />
-                    <div>
-                      <div className="flex mb-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        ))}
+        {/* Testimonials Scroll Section */}
+        <section className="mt-24 relative h-[500px] bg-gradient-to-r from-gray-50 to-white overflow-hidden">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full">
+              <div className="animate-scroll-left flex gap-8">
+                {testimonialsFiltered.map((testimonial, index) => (
+                  <div 
+                    key={index} 
+                    className="inline-flex flex-col bg-white rounded-2xl shadow-lg px-8 py-8 w-[400px] flex-shrink-0 hover:shadow-xl transition-shadow duration-300"
+                  >
+                    <div className="flex items-center gap-4 mb-6">
+                      <Image
+                        src={testimonial.image}
+                        alt={testimonial.name}
+                        width={64}
+                        height={64}
+                        className="rounded-full border-2 border-gray-100 object-cover"
+                        unoptimized={true}
+                      />
+                      <div>
+                        <h4 className="font-semibold text-lg">{testimonial.name}</h4>
+                        <p className="text-sm text-gray-600">{testimonial.role}</p>
                       </div>
-                      <h3 className="font-bold text-lg">{testimonial.name}</h3>
-                      <p className="text-sm text-gray-500">{testimonial.role}</p>
                     </div>
+                    <div className="flex items-center mb-6">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                      ))}
+                    </div>
+                    <p className="text-gray-700 text-base leading-relaxed">{testimonial.quote}</p>
                   </div>
-                  <blockquote className="text-gray-700 text-sm flex-grow">{testimonial.quote}</blockquote>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
-        {/* FAQ Section - Temporarily Hidden */}
-        {/* 
-        <section className="mt-32 px-4 md:px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl">
-            <h2 className="text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-            <Accordion type="single" collapsible className="w-full">
-              {faqItems.map((item, index) => (
-                <AccordionItem key={index} value={`item-${index}`}>
-                  <AccordionTrigger>{item.question}</AccordionTrigger>
-                  <AccordionContent>{item.answer}</AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
-        </section>
-        */}
-
-        {/* Bottom CTA */}
-        <section className="mt-24 px-4 md:px-6 lg:px-8">
+        {/* Footer CTA */}
+        <section className="mt-24 mb-12">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl font-bold mb-6">Ready to Transform Your Health?</h2>
-            
+            <h2 className="text-3xl font-bold mb-8">Ready to Transform Your Health?</h2>
             <form onSubmit={handleJoinWaitlist} className="flex justify-center gap-2">
               <Input
                 type="email"
@@ -787,195 +570,74 @@ export default function Home() {
                 {isSubmitting ? "Applying..." : "Apply for Coaching"}
               </Button>
             </form>
-            <p className="text-xs text-gray-500 mt-2">We will never sell your information or spam you</p>
           </div>
         </section>
-
       </div>
 
-      {/* Footer */}
-      <footer className="mt-16 py-6 text-center text-sm text-gray-500">
-        © 2025 Metrics Health International LLC
-      </footer>
-
+      {/* Waitlist Modal */}
       <WaitlistModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        email={email}
         onSubmit={handleSubmit}
+        email={email}
         isSubmitting={isSubmitting}
       />
 
-      {/* Transformation Story Modal */}
-      <Dialog 
-        open={isTransformationModalOpen} 
-        onOpenChange={setIsTransformationModalOpen}
-      >
-        {selectedCase && (
-          <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="text-2xl">{selectedCase.name}'s Transformation</DialogTitle>
-              <DialogDescription>
-                {selectedCase.title}
-              </DialogDescription>
-            </DialogHeader>
-            
-            <div className="mt-4">
-              <div className="mb-6 relative">
-                <Image 
-                  src={selectedCase.transformationImages[modalImageIndex]}
-                  alt={`${selectedCase.name} transformation`}
-                  width={600} 
-                  height={400} 
-                  className="w-full h-auto rounded-md"
-                  unoptimized={true}
-                />
-                {selectedCase.transformationImages.length > 1 && (
-                  <>
-                    <button 
-                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white rounded-full p-1 hover:bg-black/70"
-                      onClick={() => prevImage(selectedCase.id, true)}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                      </svg>
-                    </button>
-                    <button 
-                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white rounded-full p-1 hover:bg-black/70"
-                      onClick={() => nextImage(selectedCase.id, true)}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </button>
-                    <div className="absolute -bottom-6 left-0 right-0 flex justify-center gap-2 mb-2">
-                      {selectedCase.transformationImages.map((_, index) => (
-                        <button 
-                          key={index} 
-                          className={`h-2 rounded-full transition-all ${
-                            index === modalImageIndex ? 'w-6 bg-blue-500' : 'w-2 bg-gray-300 hover:bg-gray-400'
-                          }`}
-                          onClick={() => setModalImageIndex(index)}
-                        />
-                      ))}
+      {/* Transformation Modal */}
+      <Dialog open={isTransformationModalOpen} onOpenChange={setIsTransformationModalOpen}>
+        <DialogContent className="max-w-4xl">
+          {selectedCase && (
+            <>
+              <DialogHeader>
+                <DialogTitle>{selectedCase.title}</DialogTitle>
+                <DialogDescription>
+                  <div className="mt-4">
+                    <div className="relative aspect-video">
+                      <Image
+                        src={selectedCase.transformationImages[modalImageIndex]}
+                        alt={`${selectedCase.name} transformation`}
+                        fill
+                        className="object-cover rounded-lg"
+                        unoptimized={true}
+                      />
+                      {selectedCase.transformationImages.length > 1 && (
+                        <>
+                          <button
+                            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white rounded-full p-1"
+                            onClick={() => prevImage(selectedCase.id, true)}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            </svg>
+                          </button>
+                          <button
+                            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white rounded-full p-1"
+                            onClick={() => nextImage(selectedCase.id, true)}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </button>
+                        </>
+                      )}
                     </div>
-                  </>
-                )}
-              </div>
-              
-              <div className="flex flex-wrap gap-2 mb-4 mt-8">
-                {selectedCase.metrics.map((metric, index) => (
-                  <div key={index} className="bg-blue-100 px-2 py-1 rounded text-xs text-blue-800">{metric}</div>
-                ))}
-              </div>
-              
-              <div className="mt-4 text-sm text-gray-700 whitespace-pre-line">
-                {selectedCase.fullStory}
-              </div>
-              
-              <div className="mt-8 border-t pt-6">
-                <h4 className="font-medium mb-2">Ready for your transformation?</h4>
-                <Button 
-                  onClick={() => {
-                    setIsTransformationModalOpen(false)
-                    setTimeout(() => router.push('/video'), 300)
-                  }}
-                  className="bg-blue-500 hover:bg-blue-600"
-                >
-                  Apply for Coaching
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        )}
-      </Dialog>
-
-      {/* Video Modal */}
-      <Dialog
-        open={isVideoModalOpen}
-        onOpenChange={(open) => {
-          setIsVideoModalOpen(open);
-          if (!open) {
-            setShowApplyButton(false);
-          }
-        }}
-      >
-        <DialogContent className="sm:max-w-[700px]">
-          <DialogHeader>
-            <DialogTitle className="text-2xl">Watch This Important Message</DialogTitle>
-            <DialogDescription>
-              Learn how our approach can transform your health
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="mt-4">
-            {/* Wistia Video Placeholder - Replace with actual Wistia embed */}
-            <div className="relative w-full aspect-video mx-auto bg-gray-200 flex items-center justify-center">
-              <div className="text-center p-4">
-                <p className="text-lg text-gray-600 mb-2">Wistia Video Placeholder</p>
-                <p className="text-sm text-gray-500">Replace this with your Wistia embed code</p>
-                {/* Example Wistia embed code structure (commented out) */}
-                {/* 
-                <script src="https://fast.wistia.com/embed/medias/YOUR_VIDEO_ID.jsonp" async></script>
-                <script src="https://fast.wistia.com/assets/external/E-v1.js" async></script>
-                <div className="wistia_responsive_padding" style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
-                  <div className="wistia_responsive_wrapper" style={{ height: '100%', left: 0, position: 'absolute', top: 0, width: '100%' }}>
-                    <div className="wistia_embed wistia_async_YOUR_VIDEO_ID videoFoam=true" style={{ height: '100%', position: 'relative', width: '100%' }}>
-                      <div className="wistia_swatch" style={{ height: '100%', left: 0, opacity: 1, overflow: 'hidden', position: 'absolute', top: 0, transition: 'opacity 200ms', width: '100%' }}>
-                        <img src="https://fast.wistia.com/embed/medias/YOUR_VIDEO_ID/swatch" style={{ filter: 'blur(5px)', height: '100%', objectFit: 'contain', width: '100%' }} alt="" aria-hidden="true" />
+                    <div className="mt-4">
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {selectedCase.metrics.map((metric, index) => (
+                          <span key={index} className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                            {metric}
+                          </span>
+                        ))}
                       </div>
+                      <p className="whitespace-pre-line">{selectedCase.fullStory}</p>
                     </div>
                   </div>
-                </div>
-                */}
-              </div>
-            </div>
-            
-            {showApplyButton && (
-              <div className="mt-6 text-center">
-                <Button 
-                  onClick={() => {
-                    setIsVideoModalOpen(false);
-                    setIsCalendlyModalOpen(true);
-                  }}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-lg font-medium"
-                >
-                  Apply for your strategy call
-                </Button>
-              </div>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Calendly Modal */}
-      <Dialog
-        open={isCalendlyModalOpen}
-        onOpenChange={(open) => {
-          setIsCalendlyModalOpen(open);
-          if (!open) {
-            // After closing calendly, show the application form
-            setTimeout(() => setIsModalOpen(true), 300);
-          }
-        }}
-      >
-        <DialogContent className="sm:max-w-[700px] max-h-[90vh]">
-          <DialogHeader>
-            <DialogTitle className="text-2xl">Schedule Your Strategy Call</DialogTitle>
-            <DialogDescription>
-              Choose a time that works for you
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="mt-4 h-[600px] overflow-hidden">
-            {/* Calendly inline widget */}
-            <div 
-              id="calendly-container"
-              style={{ minWidth: '320px', height: '600px' }}
-            ></div>
-          </div>
+                </DialogDescription>
+              </DialogHeader>
+            </>
+          )}
         </DialogContent>
       </Dialog>
     </div>
   )
-}
+} 

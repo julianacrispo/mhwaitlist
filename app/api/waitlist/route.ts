@@ -54,79 +54,90 @@ function validatePhoneNumber(phoneNumber: string, countryCode: string): boolean 
 }
 
 // Function to add subscriber to ConvertKit using V3 API
-async function addToConvertKit(email: string, phoneNumber: string, firstName: string = "", lastName: string = "") {
-  const apiKey = process.env.CONVERTKIT_API_KEY;
-  const formId = process.env.CONVERTKIT_FORM_ID;
-
-  if (!apiKey || !formId) {
-    console.error('ConvertKit API Key or Form ID is missing');
-    return { success: false, message: 'ConvertKit configuration is missing' };
+async function addToConvertKit(email: string, phoneNumber: string, firstName: string, lastName: string, goals: string, challenges: string, linkedinUrl: string) {
+  if (!process.env.CONVERTKIT_API_KEY || !process.env.CONVERTKIT_FORM_ID) {
+    console.error('ConvertKit configuration missing');
+    return { success: false, message: 'ConvertKit configuration missing' };
   }
 
-  console.log(`Adding to ConvertKit: email=${email}, phone=${phoneNumber}, firstName=${firstName}, lastName=${lastName}`);
-
-  const payload = {
-    email,
-    first_name: firstName,
-    fields: {
-      phone_number: phoneNumber,
-      last_name: lastName,
-    },
-  };
-
-  console.log('ConvertKit payload:', payload);
-
   try {
-    // Using the API key as a query parameter instead of in the body
-    const response = await fetch(`https://api.convertkit.com/v3/forms/${formId}/subscribe?api_key=${apiKey}`, {
+    const response = await fetch(`https://api.convertkit.com/v3/forms/${process.env.CONVERTKIT_FORM_ID}/subscribe`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        api_key: process.env.CONVERTKIT_API_KEY,
+        email: email,
+        first_name: firstName,
+        fields: {
+          phone_number: phoneNumber,
+          last_name: lastName,
+          goals: goals,
+          challenges: challenges,
+          linkedin_url: linkedinUrl
+        }
+      }),
     });
 
     const data = await response.json();
     console.log('ConvertKit response:', data);
 
-    if (!response.ok) {
-      console.error('ConvertKit error:', data);
-      return { success: false, message: 'Failed to add to ConvertKit', error: data };
+    if (data.subscription) {
+      return {
+        success: true,
+        message: 'Added to ConvertKit successfully',
+        data
+      };
+    } else {
+      return {
+        success: false,
+        message: 'Failed to add to ConvertKit',
+        error: data
+      };
     }
-
-    return { success: true, message: 'Added to ConvertKit successfully', data };
   } catch (error) {
-    console.error('ConvertKit error:', error);
-    return { success: false, message: 'Failed to add to ConvertKit', error };
+    console.error('Error adding to ConvertKit:', error);
+    return {
+      success: false,
+      message: 'Error adding to ConvertKit',
+      error
+    };
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    // Log the start of request processing
-    console.log('API route hit, processing request...');
-    console.log('Request headers:', Object.fromEntries(request.headers.entries()));
-    
-    // Parse the request body
-    const body = await request.json();
+    const body = await req.json();
     console.log('Received data:', body);
-    
-    const { email, name, company, countryCode, phoneNumber, goals, challenges } = body;
+
+    const { email, name, company, countryCode, phoneNumber, goals, challenges, linkedinUrl } = body;
+    const [firstName, ...lastNameParts] = name.split(' ');
+    const lastName = lastNameParts.join(' ');
 
     // Validate required fields
-    if (!email || !name || !phoneNumber || !goals || !challenges) {
-      console.error('Missing required fields:', { email, name, phoneNumber, goals, challenges });
+    if (!email || !name || !phoneNumber) {
       return NextResponse.json(
-        { message: 'Missing required fields', success: false },
+        { error: 'Email, name, and phone number are required' },
+        { status: 400 }
+      );
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { error: 'Invalid email format' },
         { status: 400 }
       );
     }
 
     // Validate phone number format
-    if (!validatePhoneNumber(phoneNumber, countryCode || "+1")) {
-      console.error('Invalid phone number format:', { phoneNumber, countryCode });
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+    const formattedPhoneNumber = phoneNumber.replace(/\D/g, '');
+    if (!phoneRegex.test(formattedPhoneNumber)) {
       return NextResponse.json(
-        { message: 'Invalid phone number format', success: false },
+        { error: 'Invalid phone number format' },
         { status: 400 }
       );
     }
@@ -141,16 +152,10 @@ export async function POST(request: Request) {
     if (existingEntry) {
       console.log('Email already exists in waitlist:', email);
       return NextResponse.json(
-        { 
-          message: 'This email is already on our waitlist! We\'ll be in touch soon.', 
-          success: true 
-        },
-        { status: 200 }
+        { error: 'Email already exists in waitlist' },
+        { status: 400 }
       );
     }
-
-    // Format phone number for storage (ensure it's just digits)
-    const formattedPhoneNumber = phoneNumber.replace(/\D/g, '');
 
     // Create new waitlist entry
     console.log('Creating waitlist entry...');
@@ -158,54 +163,31 @@ export async function POST(request: Request) {
       email,
       name,
       company,
-      countryCode: countryCode || "+1",
+      countryCode,
       phoneNumber: formattedPhoneNumber,
       goals,
       challenges,
+      linkedinUrl
     });
     console.log('Waitlist entry created:', waitlistEntry);
 
-    // Send to ConvertKit
-    if (process.env.CONVERTKIT_API_KEY && process.env.CONVERTKIT_FORM_ID) {
-      try {
-        console.log('Attempting to add subscriber to ConvertKit:', email);
-        
-        // Prepare custom fields for ConvertKit
-        const customFields = {
-          company: company || '',
-          phone: `${countryCode || "+1"} ${formattedPhoneNumber}`,
-          goals: goals,
-          challenges: challenges
-        };
-        
-        // Log ConvertKit configuration for debugging
-        console.log('ConvertKit configuration:', {
-          API_KEY_EXISTS: !!process.env.CONVERTKIT_API_KEY,
-          API_KEY_LENGTH: process.env.CONVERTKIT_API_KEY?.length || 0,
-          API_KEY_PREFIX: process.env.CONVERTKIT_API_KEY?.substring(0, 4) || '',
-          FORM_ID: process.env.CONVERTKIT_FORM_ID,
-          FORM_ID_TYPE: typeof process.env.CONVERTKIT_FORM_ID,
-          FORM_ID_IS_NUMERIC: !isNaN(Number(process.env.CONVERTKIT_FORM_ID))
-        });
-        
-        // Add to ConvertKit
-        const ckResponse = await addToConvertKit(email, formattedPhoneNumber, name, '');
-        console.log('ConvertKit subscription successful:', ckResponse);
-      } catch (ckError) {
-        // Don't throw an error, just log it - form submission will continue
-        console.error('Error adding to ConvertKit:', ckError);
-        // Continue execution even if ConvertKit subscription fails
-        if (ckError instanceof Error) {
-          console.error('ConvertKit error details:', {
-            message: ckError.message,
-            stack: ckError.stack,
-            name: ckError.name,
-          });
-        }
-        console.log('Continuing form submission despite ConvertKit error - this will not affect the user experience');
-      }
-    } else {
-      console.log('ConvertKit integration skipped - API key or form ID missing');
+    try {
+      console.log('Attempting to add subscriber to ConvertKit:', email);
+      
+      // Add to ConvertKit with all fields
+      const convertKitResult = await addToConvertKit(
+        email,
+        formattedPhoneNumber,
+        firstName,
+        lastName,
+        goals,
+        challenges,
+        linkedinUrl
+      );
+      console.log('ConvertKit subscription result:', convertKitResult);
+    } catch (ckError) {
+      // Don't throw an error, just log it - form submission will continue
+      console.error('Error adding to ConvertKit:', ckError);
     }
 
     // Optionally still send with Resend during transition (you can remove this later)

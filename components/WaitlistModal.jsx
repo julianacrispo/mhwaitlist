@@ -109,7 +109,7 @@ const getPatternInfo = (countryCode) => {
   return phonePatterns[countryCode] || phonePatterns.default;
 }
 
-export function WaitlistModal({ isOpen, onClose, email, onSubmit }) {
+export function WaitlistModal({ isOpen, onClose, email, onSubmit, isSubmitting }) {
   const [formData, setFormData] = useState({
     email: email || "",
     name: "",
@@ -120,7 +120,6 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit }) {
     challenges: [],
   })
   const [phoneError, setPhoneError] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [challengesOpen, setChallengesOpen] = useState(false)
   const patternInfo = getPatternInfo(formData.countryCode)
 
@@ -188,44 +187,25 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     
-    // Validate phone number
-    const isPhoneValid = validatePhoneNumber()
-    if (!isPhoneValid) {
-      toast.error("Please enter a valid phone number")
+    if (!validatePhoneNumber()) {
+      setPhoneError("Please enter a valid phone number")
       return
     }
-
-    // Validate that at least one challenge is selected
-    if (formData.challenges.length === 0) {
-      toast.error("Please select at least one challenge")
-      return
-    }
-    
-    // Set submitting state
-    setIsSubmitting(true)
     
     try {
-      // Format challenges for submission
-      const challengesFormatted = formData.challenges.join(', ')
-      
-      // Format phone number to remove any non-digit characters before submitting
-      const formattedData = {
-        ...formData,
-        phoneNumber: formData.phoneNumber.replace(/\D/g, ''),
-        challenges: challengesFormatted
-      }
-      
-      // Submit the data to the API
-      await onSubmit(formattedData)
-      
-      // Let the parent component handle success messaging
-      console.log('Form submission successful')
+      await onSubmit(formData)
       onClose()
+      setFormData({
+        email: "",
+        name: "",
+        company: "",
+        countryCode: "+1",
+        phoneNumber: "",
+        goals: "",
+        challenges: [],
+      })
     } catch (error) {
-      console.error('Error in form submission:', error)
-      toast.error("There was an error submitting the form. Please try again.")
-    } finally {
-      setIsSubmitting(false)
+      console.error("Error submitting form:", error)
     }
   }
 
@@ -384,9 +364,20 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit }) {
             <Button variant="outline" type="button" onClick={onClose} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Submitting..." : "Submit"}
-            </Button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full rounded-md bg-primary px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            >
+              {isSubmitting ? (
+                <div className="flex items-center justify-center">
+                  <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
+                  <span className="ml-2">Submitting...</span>
+                </div>
+              ) : (
+                "Join Waitlist"
+              )}
+            </button>
           </div>
         </form>
       </DialogContent>
