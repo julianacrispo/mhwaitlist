@@ -59,16 +59,16 @@ const mainTestimonials = [
   },
   {
     name: "Trina L.",
-    role: "Director",
+    role: "Medical Director",
     image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/trinaJPEG-wmHQeid6YFsCADKCaDhVWtOLTYQRMb.JPEG",
     quote: "Metrics Health has completely transformed the way I look at health for the better. What worked in my 20s no longer works in my 40s and I've been able to achieve my goals despite some of life's craziest seasons."
   },
   {
     name: "Lisa D.",
-    role: "Family Medical Doctor",
+    role: "Medical Director",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/lisa-CNtVLXZaYK8bF5YXJNOYjjTVdgTT5y.jpeg",
     quote:
-      "Juliana is taking her insights from years as a busy executive, Mom and pro physique athlete and pairing that with the latest research to help ambitious people measure what truly matters. I recommend Metrics Health to my busy, working mom patients."
+      "As a Mom and Medical Doctor, I can empathize with how hard it is to stay on top of your health and get results. I recommend Metrics Health to my female executive patients that need that extra guidance and support for similar women."
   }
 ]
 
@@ -79,13 +79,6 @@ const finalRowTestimonials = [
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/alyson-aAsuqDQT6TVPAj2ZqDArSFU9yvQ6LD.jpeg",
     quote:
       "Prior to Metrics Health I had lost 12 lbs of muscle in a year on Dexascan. Clearly my efforts to lose fat weren't working. In the span of the first 6 weeks I added 3 lbs of muscle and lost 4 lbs of body fat. I am now hooked on the process and armed with habits I can use for life."
-  },
-  {
-    name: "Marina M.",
-    role: "Founder & Youtuber",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/marina-I2HgSWKgb1b6qfQjYOBfmhKkZqS7JN.jpeg",
-    quote:
-      "Juliana has been a go-to resource for ambitious women to find balance with their health goals on Youtube for a while now. With Metrics Health, she is bringing it all together in a way that's truly unique, actionable, and exciting for the modern woman."
   },
   {
     name: "Ivanna B.",
@@ -138,7 +131,7 @@ const finalRowTestimonials = [
   },
   {
     name: "Ida R.",
-    role: "Technology Director",
+    role: "Technology Executive",
     image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/ida-i2anCD6wa8yGjedQa5Mdc9tpR2ABgY.png",
     quote:
       "I spent years spinning my wheels trying to do what I thought was best for my body and not getting the results I wanted. Within weeks I got better results than the years I spent trying on my own. If you want to look better than you ever had before in your 40's + then Metrics Health is the way to go."
@@ -156,13 +149,6 @@ const finalRowTestimonials = [
     image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/kasey-cnxhy0ROafEoHS2ztrDI4qo4Bvqggy.jpeg",
     quote:
       "Metrics Health is taking a decade of experiments and insights and distilling them into protocols that will move the needle most for the individual. The approach is realistic and maintainable. As a Mom of soon-to-be 2 kiddos, I'm glad to have Metrics Health in my corner."
-  },
-  {
-    name: "Katerina L.",
-    role: "Founder & CEO",
-    image: "https://c67qkd4jojiixsgq.public.blob.vercel-storage.com/katerina-DpTKAqBo2DExcfrocZ6HKHsUjXpVFM.jpeg",
-    quote:
-      "My company focuses on preventing burnout in employees using Neuroscience so I was excited to see Metrics Health had developed an approach using what we know about health. What Juliana knows is that the issue isn't know what to do, it's knowing how to make it a habit and that's where Metrics Health shines."
   }
 ]
 
@@ -250,17 +236,21 @@ export default function Home() {
 
   // Initialize Calendly when modal opens
   useEffect(() => {
-    if (isCalendlyModalOpen && window.Calendly && typeof window.Calendly.initInlineWidget === 'function') {
-      // Short timeout to ensure the DOM element exists
-      setTimeout(() => {
-        window.Calendly?.initInlineWidget({
-          url: 'https://calendly.com/metricshealthschedule/juliana-crispo-au-pair-intros-clone',
-          parentElement: document.getElementById('calendly-container'),
-          prefill: {},
-          utm: {}
-        });
-      }, 100);
-    }
+    if (!isCalendlyModalOpen) return
+
+    const timer = setTimeout(() => {
+      const container = document.getElementById('calendly-container')
+      if (!container || !window.Calendly?.initInlineWidget) return
+
+      window.Calendly.initInlineWidget({
+        url: 'https://calendly.com/metricshealthschedule/juliana-crispo-au-pair-intros-clone',
+        parentElement: container,
+        prefill: {},
+        utm: {}
+      })
+    }, 100)
+
+    return () => clearTimeout(timer)
   }, [isCalendlyModalOpen]);
 
   const handleJoinWaitlist = (e: React.FormEvent<HTMLFormElement>) => {
@@ -407,20 +397,12 @@ export default function Home() {
     <div className="min-h-screen w-full bg-gradient-to-br from-white to-gray-100">
       <Toaster position="top-center" />
       
-      {/* Calendly Script */}
-      <Script 
-        src="https://assets.calendly.com/assets/external/widget.js" 
-        strategy="afterInteractive"
-        onLoad={() => {
-          // Initialize Calendly after script loads
-          window.Calendly && window.Calendly.initInlineWidget({
-            url: 'https://calendly.com/metricshealthschedule/juliana-crispo-au-pair-intros-clone',
-            parentElement: document.getElementById('calendly-container'),
-            prefill: {},
-            utm: {}
-          });
-        }}
-      />
+      {isCalendlyModalOpen && (
+        <Script 
+          src="https://assets.calendly.com/assets/external/widget.js" 
+          strategy="afterInteractive"
+        />
+      )}
       
       <div className="container mx-auto px-4 py-8">
         {/* Logo */}
@@ -455,7 +437,7 @@ export default function Home() {
                 <span className="text-sm text-gray-500">Try Our Method for 30 Days Risk-Free</span>
               </div>
               <h1 className="font-bold text-[2.75rem] uppercase leading-[0.85] tracking-[-0.03em] lg:text-[3.5rem]">
-                HOW SMART WOMEN REACH HEALTH GOALS ON AUTOPILOT
+                How ambitious women reach health goals on autopilot
               </h1>
             </div>
 
@@ -474,7 +456,7 @@ export default function Home() {
                   className="h-12 rounded-xl bg-black px-8 text-white hover:bg-black/90"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Applying..." : "Apply for Coaching"}
+                  {isSubmitting ? "Applying..." : "Apply for Access"}
                 </Button>
               </form>
 
@@ -499,51 +481,11 @@ export default function Home() {
                     ))}
                   </div>
                 </div>
-                <p className="text-xs text-gray-600">Loved by 100+ Founders, Execs, and CEOs</p>
+                <p className="text-xs text-gray-600">Loved by 100+ Founders and Execs</p>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Measurable Improvements Section */}
-        <section className="mt-16 px-4 md:px-6 lg:px-8">
-          <div className="mx-auto max-w-4xl text-center">
-            <h2 className="text-2xl font-bold mb-10">Give Us 90 Days and Get:</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {/* Energy Levels */}
-              <div className="flex flex-col items-center">
-                <div className="bg-blue-100 p-4 rounded-full mb-3 flex items-center justify-center">
-                  <span className="text-2xl" role="img" aria-label="energy">⚡</span>
-                </div>
-                <h3 className="font-semibold text-lg">Increased Energy Levels</h3>
-              </div>
-              
-              {/* Cognitive Function */}
-              <div className="flex flex-col items-center">
-                <div className="bg-blue-100 p-4 rounded-full mb-3 flex items-center justify-center">
-                  <span className="text-2xl" role="img" aria-label="brain">🧠</span>
-                </div>
-                <h3 className="font-semibold text-lg">Improved Cognitive Function</h3>
-              </div>
-              
-              {/* Body Composition */}
-              <div className="flex flex-col items-center">
-                <div className="bg-blue-100 p-4 rounded-full mb-3 flex items-center justify-center">
-                  <span className="text-2xl" role="img" aria-label="body">👤</span>
-                </div>
-                <h3 className="font-semibold text-lg">Better Body Composition</h3>
-              </div>
-              
-              {/* Healthspan */}
-              <div className="flex flex-col items-center">
-                <div className="bg-blue-100 p-4 rounded-full mb-3 flex items-center justify-center">
-                  <span className="text-2xl" role="img" aria-label="running">🏃</span>
-                </div>
-                <h3 className="font-semibold text-lg">Up to 10+ Years<br />to Your Life</h3>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Video Section */}
         <section className="mt-16 px-4 md:px-6 lg:px-8">
@@ -784,7 +726,7 @@ export default function Home() {
                 className="h-12 rounded-xl bg-black px-8 text-white hover:bg-black/90"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Applying..." : "Apply for Coaching"}
+                {isSubmitting ? "Applying..." : "Apply for Access"}
               </Button>
             </form>
             <p className="text-xs text-gray-500 mt-2">We will never sell your information or spam you</p>
@@ -795,7 +737,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="mt-16 py-6 text-center text-sm text-gray-500">
-        © 2025 Metrics Health International LLC
+        © 2026 Metrics Health
       </footer>
 
       <WaitlistModal
@@ -882,7 +824,7 @@ export default function Home() {
                   }}
                   className="bg-blue-500 hover:bg-blue-600"
                 >
-                  Apply for Coaching
+                  Apply for Access
                 </Button>
               </div>
             </div>
