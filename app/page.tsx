@@ -511,7 +511,7 @@ export default function Home() {
         <section className="mt-24 px-4 md:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <h2 className="text-3xl font-bold text-center mb-2">Transform from the Inside Out</h2>
-            <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">Real results from busy clients who went from struggling to stress-free.</p>
+            <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">Ambitious women age 35+ who got results on their terms.</p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {caseStudies.map((caseStudy) => (
