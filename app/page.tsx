@@ -12,7 +12,6 @@ import { Toaster } from "react-hot-toast"
 import { AnimatedText } from "@/components/AnimatedText"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import Script from 'next/script'
-import { useRouter } from "next/navigation"
 
 // Add TypeScript declaration for Calendly
 declare global {
@@ -217,7 +216,6 @@ export default function Home() {
   const [showApplyButton, setShowApplyButton] = useState(false)
   const [isCalendlyModalOpen, setIsCalendlyModalOpen] = useState(false)
   const videoTimerRef = useRef<NodeJS.Timeout | null>(null)
-  const router = useRouter()
 
   // Function to handle timer for showing apply button
   useEffect(() => {
@@ -257,8 +255,7 @@ export default function Home() {
     e.preventDefault()
     const emailValue = email.trim()
     if (emailValue) {
-      // Redirect to video page instead of showing modal
-      router.push('/video')
+      setIsModalOpen(true)
     } else {
       toast.error('Please enter your email address')
     }
@@ -820,7 +817,7 @@ export default function Home() {
                 <Button 
                   onClick={() => {
                     setIsTransformationModalOpen(false)
-                    setTimeout(() => router.push('/video'), 300)
+                    setTimeout(() => setIsModalOpen(true), 300)
                   }}
                   className="bg-blue-500 hover:bg-blue-600"
                 >
