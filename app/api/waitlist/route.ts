@@ -53,6 +53,55 @@ function validatePhoneNumber(phoneNumber: string, countryCode: string): boolean 
   return pattern.test(phoneNumber);
 }
 
+function formatField(value: unknown): string {
+  if (Array.isArray(value)) {
+    const items = value.map((item) => String(item).trim()).filter(Boolean)
+    return items.length ? items.join(", ") : "Not provided"
+  }
+  if (typeof value === "string" && value.trim()) return value.trim()
+  return "Not provided"
+}
+
+async function notifySlack(lead: {
+  name: string
+  email: string
+  phone: string
+  goals: unknown
+  challenges: unknown
+  company?: string
+}): Promise<boolean> {
+  const webhookUrl = process.env.SLACK_WEBHOOK_URL
+  if (!webhookUrl) {
+    console.error("SLACK_WEBHOOK_URL is not configured")
+    return false
+  }
+
+  const lines = [
+    "*New Metrics Health waitlist lead*",
+    `*Name:* ${lead.name}`,
+    `*Email:* ${lead.email}`,
+    `*Phone:* ${lead.phone}`,
+    `*Goal:* ${formatField(lead.goals)}`,
+    `*Challenges:* ${formatField(lead.challenges)}`,
+  ]
+  if (lead.company?.trim()) {
+    lines.push(`*LinkedIn / occupation:* ${lead.company.trim()}`)
+  }
+
+  const response = await fetch(webhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text: lines.join("\n") }),
+  })
+
+  if (!response.ok) {
+    const body = await response.text()
+    throw new Error(`Slack webhook returned ${response.status}: ${body}`)
+  }
+
+  return true
+}
+
 // Function to add subscriber to ConvertKit using V3 API
 async function addToConvertKit(email: string, phoneNumber: string, firstName: string, lastName: string, goals: string, challenges: string, linkedinUrl: string) {
   if (!process.env.CONVERTKIT_API_KEY || !process.env.CONVERTKIT_FORM_ID) {
@@ -170,6 +219,22 @@ export async function POST(req: Request) {
       linkedinUrl
     });
     console.log('Waitlist entry created:', waitlistEntry);
+
+    try {
+      const notified = await notifySlack({
+        name,
+        email,
+        phone: `${countryCode} ${formattedPhoneNumber}`,
+        goals,
+        challenges,
+        company,
+      })
+      if (notified) {
+        console.log('Slack notification sent for:', email)
+      }
+    } catch (slackError) {
+      console.error('Error sending Slack notification:', slackError)
+    }
 
     try {
       console.log('Attempting to add subscriber to ConvertKit:', email);

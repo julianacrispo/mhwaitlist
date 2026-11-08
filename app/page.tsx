@@ -282,8 +282,6 @@ export default function Home() {
         throw new Error(data.error || 'Failed to join waitlist')
       }
 
-      toast.success('Successfully joined the waitlist! Check your email for confirmation.')
-      setIsModalOpen(false)
       setEmail("")
     } catch (error) {
       console.error('Error submitting form:', error)

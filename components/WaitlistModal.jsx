@@ -121,11 +121,18 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit, isSubmitting }
   })
   const [phoneError, setPhoneError] = useState("")
   const [challengesOpen, setChallengesOpen] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
   const patternInfo = getPatternInfo(formData.countryCode)
 
   useEffect(() => {
     setFormData(prev => ({ ...prev, email }))
   }, [email])
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSubmitted(false)
+    }
+  }, [isOpen])
 
   // Reset phone error when country code changes
   useEffect(() => {
@@ -194,7 +201,7 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit, isSubmitting }
     
     try {
       await onSubmit(formData)
-      onClose()
+      setSubmitted(true)
       setFormData({
         email: "",
         name: "",
@@ -212,6 +219,20 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit, isSubmitting }
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
+        {submitted ? (
+          <div className="py-8 text-center space-y-3">
+            <DialogHeader>
+              <DialogTitle>You're on the waitlist</DialogTitle>
+              <DialogDescription>
+                We'll be in touch soon.
+              </DialogDescription>
+            </DialogHeader>
+            <Button type="button" onClick={onClose} className="mt-4">
+              Close
+            </Button>
+          </div>
+        ) : (
+        <>
         <DialogHeader>
           <DialogTitle>Apply for Coaching</DialogTitle>
           <DialogDescription>
@@ -380,6 +401,8 @@ export function WaitlistModal({ isOpen, onClose, email, onSubmit, isSubmitting }
             </button>
           </div>
         </form>
+        </>
+        )}
       </DialogContent>
     </Dialog>
   )
